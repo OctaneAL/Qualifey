@@ -28,7 +28,11 @@ def skills_connections_to_graph(input_name: str = 'skills_connections.json', out
                 if not source in graph[target]:
                     graph[target][source] = weight
                 else:
-                    graph[target][source] =+ weight
+                    graph[target][source] += weight
+    
+    for source in graph.keys():
+        for target in graph[source].keys():
+            graph[source][target] /= 2
     
     write_json(graph, os.path.join(visualization_path, output_name))
 
