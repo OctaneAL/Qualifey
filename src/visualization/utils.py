@@ -21,19 +21,27 @@ def visualize_graph(input_name: str = 'global_graph.json', output_name: str = 'd
         t = 0
         count1 += 1
         for target in graph[source]:
-            if graph[source][target] > 50:
+            if graph[source][target] > 200:
                 count2 += 1
                 source_list.append(source)
                 target_list.append(target)
                 weight_list.append(graph[source][target] / k)
                 t += graph[source][target] / k
-            if count2 == 10:
+            if count2 == 15:
                 break
         if t != 0:
             temp.append(t)
-        if count1 == 10:
+        if count1 == 15:
             break
     temp.pop()
+    sizes_ = {}
+    for i in range(len(source_list)):
+        if not source_list[i] in sizes_:
+            sizes_[source_list[i]] = 0
+        if not target_list[i] in sizes_:
+            sizes_[target_list[i]] = 0
+        sizes_[source_list[i]] += weight_list[i]
+        sizes_[target_list[i]] += weight_list[i]
         
     data = {
         'source': source_list,
@@ -74,12 +82,16 @@ def visualize_graph(input_name: str = 'global_graph.json', output_name: str = 'd
     print()
     sizes.append(5)
     print(len(sizes))
-    d3.d3graph(df, filepath='d3graph.html', showfig=False, size = 1)
+    d3.d3graph(df, filepath='d3graph.html', showfig=False, size = 5, charge = 10000)
+    d3.D3graph.set_node_properties(minmax = [0, 5000])
     print(d3.D3graph.adjmat.shape[0])
-    d3.D3graph.set_node_properties(minmax = [0, 5000], size = 5)
+    for i in d3.D3graph.node_properties:
+        d3.D3graph.node_properties[i]['size'] = sizes_[i] / 50
+    # d3.D3graph.node_properties['python']['size'] = 5000
+    print(d3.D3graph.node_properties)
     # d3.D3graph.set_node_properties['size'] = sizes
     # d3.d3graph(df2, filepath='d3graph.html', charge = 400, showfig=False, size = 10)
-    d3.D3graph.set_edge_properties(minmax_distance=[2, 1000])
+    d3.D3graph.set_edge_properties(minmax_distance=[2, 1000], minmax=[0.5, 10])
     d3.D3graph.show()
     return
     # Change scaler
