@@ -16,9 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Qualifey.views import home_view
+from Qualifey.views import home_view, graph_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_view, name='home'),
+    path('graph/', graph_view, name='graph')
 ]

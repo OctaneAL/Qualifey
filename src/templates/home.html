@@ -4,8 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    {% block head %}
+    {% endblock %}
 </head>
 <body>
     <h1>Hello World</h1>
+    {% csrf_token %}
+    <form action="#" method="get">
+        <input type="submit" class="btn" value="Generate Graph" name="gen_graph">
+    </form>
+    {% block body %}
+    {% endblock %}
 </body>
 </html>
