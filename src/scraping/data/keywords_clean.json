@@ -1,0 +1,856 @@
+{
+    "big_data": [
+        "bigdata",
+        "big-data",
+        "big data"
+    ],
+    "docker": [
+        "docker"
+    ],
+    "sql": [
+        "sql",
+        "database"
+    ],
+    "nosql": [
+        "nosql"
+    ],
+    "postgresql": [
+        "postgres",
+        "postgresql"
+    ],
+    "sqlite": [
+        "sqlite"
+    ],
+    "olap": [
+        "olap",
+        "oltp"
+    ],
+    "sqlserver": [
+        "sqlserver"
+    ],
+    "sqlalchemy": [
+        "sqlalchemy"
+    ],
+    "hive": [
+        "hive"
+    ],
+    "bigquery": [
+        "bigquery",
+        "big-query",
+        "big query"
+    ],
+    "xquery": [
+        "xquery"
+    ],
+    "jquery": [
+        "jquery"
+    ],
+    "big_table": [
+        "bigtable",
+        "big-table",
+        "big table"
+    ],
+    "big_iq": [
+        "bigiq",
+        "big-iq",
+        "big iq"
+    ],
+    "big_id": [
+        "bigid",
+        "big-id",
+        "big id"
+    ],
+    "js": [
+        "javascript",
+        "js"
+    ],
+    "java": [
+        "java"
+    ],
+    "typescript": [
+        "typescript",
+        "ts"
+    ],
+    "jee": [
+        "jee"
+    ],
+    ".net": [
+        ".net",
+        "dotnet",
+        "dot net"
+    ],
+    "linux": [
+        "linux",
+        "unix",
+        "ubuntu"
+    ],
+    "ubuntu": [
+        "ubuntu"
+    ],
+    "kubernetes": [
+        "kubernetes"
+    ],
+    "rhel": [
+        "rhel"
+    ],
+    "centos": [
+        "centos"
+    ],
+    "aws": [
+        "aws",
+        "amazon",
+        "cloudfront",
+        "awscloud"
+    ],
+    "awscloud": [
+        "awscloud"
+    ],
+    "cloudfront": [
+        "cloudfront"
+    ],
+    "gcp": [
+        "gcp"
+    ],
+    "azure": [
+        "azure",
+        "devops",
+        "secdevops"
+    ],
+    "python": [
+        "python"
+    ],
+    "pythontest": [
+        "pythontest"
+    ],
+    "pandas": [
+        "pandas"
+    ],
+    "spring_boot": [
+        "springboot",
+        "spring-boot",
+        "spring_boot",
+        "spring boot"
+    ],
+    "spring_batch": [
+        "springbatch",
+        "spring-batch",
+        "spring_batch",
+        "spring batch"
+    ],
+    "selenium": [
+        "selenium"
+    ],
+    "json": [
+        "json"
+    ],
+    "yaml": [
+        "yaml"
+    ],
+    "xml": [
+        "xml",
+        "xsd",
+        "xmlrpc",
+        "xml-rpc",
+        "fixml"
+    ],
+    "fixml": [
+        "fixml"
+    ],
+    "xmlrpc": [
+        "xmlrpc",
+        "xml-rpc"
+    ],
+    "xsl": [
+        "xsl"
+    ],
+    "xsd": [
+        "xsd"
+    ],
+    "react_native": [
+        "reactnative",
+        "react-native",
+        "react_native",
+        "react native"
+    ],
+    "react_js": [
+        "react.js",
+        "react_js",
+        "reactjs",
+        "react js",
+        "react-js"
+    ],
+    "angular_js": [
+        "angular"
+    ],
+    "node_js": [
+        "node.js",
+        "node_js",
+        "nodejs",
+        "node js",
+        "node-js"
+    ],
+    "nest_js": [
+        "nest.js",
+        "nest_js",
+        "nestjs",
+        "nest js",
+        "nest-js"
+    ],
+    "three_js": [
+        "three.js",
+        "three_js",
+        "threejs",
+        "three js",
+        "three-js"
+    ],
+    "stencil_js": [
+        "stencil.js",
+        "stencil_js",
+        "stenciljs",
+        "stencil js",
+        "stencil-js"
+    ],
+    "backbone_js": [
+        "backbone.js",
+        "backbone_js",
+        "backbonejs",
+        "backbone js",
+        "backbone-js"
+    ],
+    "ext_js": [
+        "ext.js",
+        "ext_js",
+        "extjs",
+        "ext js",
+        "ext-js"
+    ],
+    "express_js": [
+        "express.js",
+        "express_js",
+        "expressjs",
+        "express js",
+        "express-js"
+    ],
+    "next_js": [
+        "next.js",
+        "next_js",
+        "nextjs",
+        "next js",
+        "next-js"
+    ],
+    "ember_js": [
+        "ember.js",
+        "ember_js",
+        "emberjs",
+        "ember js",
+        "ember-js"
+    ],
+    "vue_js": [
+        "vue.js",
+        "vue_js",
+        "vuejs",
+        "vue js",
+        "vue-js"
+    ],
+    "chart_js": [
+        "chart.js",
+        "chart_js",
+        "chartjs",
+        "chart js",
+        "chart-js"
+    ],
+    "jsr": [
+        "jsr"
+    ],
+    "jss": [
+        "jss"
+    ],
+    "jsf": [
+        "jsf"
+    ],
+    "j2se": [
+        "j2se"
+    ],
+    "j2ee": [
+        "j2ee"
+    ],
+    "jpa2": [
+        "jpa2"
+    ],
+    "rxjs": [
+        "rxjs"
+    ],
+    "html": [
+        "html"
+    ],
+    "css": [
+        "css"
+    ],
+    "d3": [
+        "d3"
+    ],
+    "d365": [
+        "d365"
+    ],
+    "m365": [
+        "m365"
+    ],
+    "c++": [
+        "c++"
+    ],
+    "c": [
+        "c"
+    ],
+    "c#": [
+        "c#"
+    ],
+    "php": [
+        "php"
+    ],
+    "ruby": [
+        "ruby"
+    ],
+    "git": [
+        "git"
+    ],
+    "github": [
+        "github"
+    ],
+    "gitlab": [
+        "gitlab"
+    ],
+    "bitbucket": [
+        "bitbucket"
+    ],
+    "gitops": [
+        "gitops",
+        "git-ops",
+        "git ops"
+    ],
+    "bootstrap": [
+        "bootstrap"
+    ],
+    "csf": [
+        "csf"
+    ],
+    "api": [
+        "api"
+    ],
+    "fastapi": [
+        "fastapi",
+        "fast-api",
+        "fast_api",
+        "fast api"
+    ],
+    "rest": [
+        "restapi",
+        "rest-api",
+        "rest_api rest api",
+        "rest",
+        "restful"
+    ],
+    "apim": [
+        "apim"
+    ],
+    "apigee": [
+        "apigee"
+    ],
+    "android": [
+        "android"
+    ],
+    "ios": [
+        "ios"
+    ],
+    "pycharm": [
+        "pycharm"
+    ],
+    "vscode": [
+        "vscode"
+    ],
+    "ide": [
+        "ide"
+    ],
+    "pyqt": [
+        "pyqt"
+    ],
+    "tkinter": [
+        "tkinter"
+    ],
+    "db2": [
+        "database2",
+        "db2",
+        "database 2",
+        "db 2"
+    ],
+    "xhtml": [
+        "xhtml"
+    ],
+    "dhtml": [
+        "dhtml"
+    ],
+    "scala": [
+        "scala"
+    ],
+    "gui": [
+        "gui"
+    ],
+    "cmd": [
+        "cmd"
+    ],
+    "cmdb": [
+        "cmdb"
+    ],
+    "devops": [
+        "devops",
+        "secdevops",
+        "azure"
+    ],
+    "secdevops": [
+        "secdevops"
+    ],
+    "anaconda": [
+        "anaconda"
+    ],
+    "spice": [
+        "spice"
+    ],
+    "mp4": [
+        "mp4"
+    ],
+    "oracle": [
+        "oracle"
+    ],
+    "npm": [
+        "npm"
+    ],
+    "django": [
+        "django"
+    ],
+    "flask": [
+        "flask"
+    ],
+    "hql": [
+        "hql"
+    ],
+    "ai": [
+        "ai",
+        "artificial intelligence"
+    ],
+    "shell": [
+        "shell"
+    ],
+    "beanshell": [
+        "beanshell"
+    ],
+    "perl": [
+        "perl"
+    ],
+    "kafka": [
+        "kafka"
+    ],
+    "redis": [
+        "redis"
+    ],
+    "spark": [
+        "spark",
+        "spark-ml",
+        "sparkml",
+        "spark ml",
+        "py-spark",
+        "pyspark",
+        "py spark",
+        "spark-streaming",
+        "sparkstreaming",
+        "spark streaming",
+        "java-spark",
+        "javaspark",
+        "java spark"
+    ],
+    "spark_ml": [
+        "spark-ml",
+        "sparkml",
+        "spark ml"
+    ],
+    "pyspark": [
+        "py-spark",
+        "pyspark",
+        "py spark"
+    ],
+    "spark_streaming": [
+        "spark-streaming",
+        "sparkstreaming",
+        "spark streaming"
+    ],
+    "java_spark": [
+        "java-spark",
+        "javaspark",
+        "java spark"
+    ],
+    "bonjour": [
+        "bonjour"
+    ],
+    "multithreading": [
+        "thread"
+    ],
+    "threadx": [
+        "threadx"
+    ],
+    "golang": [
+        "go"
+    ],
+    "postman": [
+        "postman"
+    ],
+    "incontact": [
+        "incontact"
+    ],
+    "marketo": [
+        "marketo"
+    ],
+    "runbook": [
+        "runbook"
+    ],
+    "sfdc": [
+        "sfdc"
+    ],
+    "redmine": [
+        "redmine"
+    ],
+    "mavenir": [
+        "mavenir"
+    ],
+    "dataverse": [
+        "dataverse"
+    ],
+    "kibana": [
+        "kibana"
+    ],
+    "cognos8": [
+        "cognos8"
+    ],
+    "commvault": [
+        "commvault"
+    ],
+    "intellij": [
+        "intellij"
+    ],
+    "avaya": [
+        "avaya"
+    ],
+    "flink": [
+        "flink",
+        "apache flink",
+        "apache-flink"
+    ],
+    "prisma": [
+        "prisma"
+    ],
+    "desadv": [
+        "desadv"
+    ],
+    "snowflake": [
+        "snowflake"
+    ],
+    "graphql": [
+        "graphql"
+    ],
+    "rest_assured": [
+        "rest_assured",
+        "rest-assured",
+        "rest assured"
+    ],
+    "xsoar": [
+        "xsoar"
+    ],
+    "mqtt": [
+        "mqtt"
+    ],
+    "laravel": [
+        "laravel"
+    ],
+    "3gpp": [
+        "3gpp"
+    ],
+    "tl1": [
+        "tl1"
+    ],
+    "svn": [
+        "svn",
+        "apache subversion",
+        "apache-subversion",
+        "apache_subversion"
+    ],
+    "splunk": [
+        "splunk"
+    ],
+    "jira": [
+        "jira"
+    ],
+    "oauth2": [
+        "oauth2"
+    ],
+    "microstrategy": [
+        "microstrategy"
+    ],
+    "mlflow": [
+        "mlflow"
+    ],
+    "flashblade": [
+        "flashblade"
+    ],
+    "cassandra": [
+        "cassandra",
+        "apache cassandra",
+        "apache-cassandra",
+        "apache_cassandra"
+    ],
+    "modbus": [
+        "modbus"
+    ],
+    "powervm": [
+        "powervm"
+    ],
+    "dms": [
+        "dms"
+    ],
+    "agile": [
+        "agile"
+    ],
+    "https": [
+        "https"
+    ],
+    "data": [
+        "data"
+    ],
+    "elasticsearch": [
+        "elasticsearch"
+    ],
+    "orchestration": [
+        "orchestration"
+    ],
+    "jenkins": [
+        "jenkins"
+    ],
+    "rdbms": [
+        "rdbms"
+    ],
+    "mongodb": [
+        "mongodb",
+        "mongo-db",
+        "mongo db",
+        "mongo_db"
+    ],
+    "terraform": [
+        "terraform"
+    ],
+    "bash": [
+        "bash"
+    ],
+    "etl": [
+        "etl"
+    ],
+    "ansible": [
+        "ansible"
+    ],
+    "r": [
+        "r"
+    ],
+    "iaas": [
+        "iaas"
+    ],
+    "solid": [
+        "solid"
+    ],
+    "ci/cd": [
+        "ci/cd"
+    ],
+    "scrum": [
+        "scrum"
+    ],
+    "tensorflow": [
+        "tensorflow"
+    ],
+    "qa": [
+        "qa"
+    ],
+    "ui": [
+        "ui"
+    ],
+    "hibernate": [
+        "hibernate"
+    ],
+    "saas": [
+        "saas"
+    ],
+    "windows": [
+        "windows"
+    ],
+    "workflow": [
+        "workflow"
+    ],
+    "tableau": [
+        "tableau"
+    ],
+    "hadoop": [
+        "hadoop",
+        "apache hadoop",
+        "apache-hadoop",
+        "apache_hadoop"
+    ],
+    "soap": [
+        "soap"
+    ],
+    "sdlc": [
+        "sdlc"
+    ],
+    "http": [
+        "http"
+    ],
+    "pytorch": [
+        "pytorch"
+    ],
+    "lambda": [
+        "lambda",
+        "aws lambda",
+        "awslambda"
+    ],
+    "kotlin": [
+        "kotlin"
+    ],
+    "migration": [
+        "migration"
+    ],
+    "junit": [
+        "junit"
+    ],
+    "provisioning": [
+        "provisioning"
+    ],
+    "groovy": [
+        "groovy"
+    ],
+    "mvc": [
+        "mvc"
+    ],
+    "ics": [
+        "ics"
+    ],
+    "sap": [
+        "sap"
+    ],
+    "ec2": [
+        "ec2"
+    ],
+    "s3": [
+        "s3"
+    ],
+    "apache": [
+        "apache"
+    ],
+    "excel": [
+        "excel"
+    ],
+    "databricks": [
+        "databricks"
+    ],
+    "gcih": [
+        "gcih"
+    ],
+    "numpy": [
+        "numpy"
+    ],
+    "puppet": [
+        "puppet"
+    ],
+    "cissp": [
+        "cissp"
+    ],
+    "maven": [
+        "maven"
+    ],
+    "servicenow": [
+        "servicenow"
+    ],
+    "ecs": [
+        "ecs",
+        "amazon ecs"
+    ],
+    "[icam]": [
+        "icam"
+    ],
+    "devsecops": [
+        "devsecops"
+    ],
+    "ldap": [
+        "ldap"
+    ],
+    "iot": [
+        "iot"
+    ],
+    "jdbc": [
+        "jdbc"
+    ],
+    "matlab": [
+        "matlab"
+    ],
+    "nlp": [
+        "nlp"
+    ],
+    "oauth": [
+        "oauth"
+    ],
+    "sdet": [
+        "sdet"
+    ],
+    "cgi": [
+        "cgi"
+    ],
+    "mulesoft": [
+        "mulesoft"
+    ],
+    "cisco": [
+        "cisco"
+    ],
+    "openshift": [
+        "openshift"
+    ],
+    "swift": [
+        "swift"
+    ],
+    "airflow": [
+        "airflow",
+        "apache airflow",
+        "apache-airflow",
+        "apache_airflow"
+    ],
+    "dns": [
+        "dns"
+    ],
+    "ids": [
+        "ids"
+    ],
+    "gradle": [
+        "gradle"
+    ],
+    "asp.net": [
+        "asp.net"
+    ],
+    "dynatrace": [
+        "dynatrace"
+    ],
+    "cloudformation": [
+        "cloudformation"
+    ],
+    "eclipse": [
+        "eclipse"
+    ],
+    "salesforce": [
+        "salesforce"
+    ],
+    "embedded": [
+        "embedded"
+    ],
+    "ajax": [
+        "ajax"
+    ]
+}

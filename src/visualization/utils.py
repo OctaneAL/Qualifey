@@ -55,77 +55,32 @@ def visualize_graph(input_name: str = 'global_graph.json', output_name: str = 'd
         'weight': weight_list,
     }
     x = min(data['weight'])
-    step = (max(data['weight']) - x) / 10
-    max_size = 1000
-    # sizes = [int(floor((weight - x) / step + 1)) for weight in temp]
-    sizes = [(weight - x) / (max_size - x) * max_size for weight in temp]
-
-    data2 = {
-        'source': source_list[k:],
-        'target': target_list[k:],
-        'weight': weight_list[k:],
-    }
 
     df = pd.DataFrame(data)
-    df2 = pd.DataFrame(data2)
 
-    # d3 = D3Blocks()
-
-    # d3.elasticgraph(df, filepath = os.path.join(output_path, output_name))
-    # d3.Elasticgraph.show()
-    # d3.Elasticgraph.D3graph.node_properties
-
-    #
-    # Initialize
     d3 = D3Blocks()
-    #
-    # Import example
-    # df = d3.import_example('energy') # 'bigbang', 'stormofswords'
-    #
-    # Create network using default
 
-    print(sizes)
-    print()
-    sizes.append(5)
-    print(len(sizes))
     d3.d3graph(df, filepath=os.path.join(output_path, output_name), showfig=False, size = 5, charge = 15000)
-    d3.D3graph.set_node_properties(minmax = [0, 5000])
-    print(d3.D3graph.adjmat.shape[0])
+    # d3.D3graph.set_node_properties(minmax = [0, 5000])
+    d3.D3graph.set_edge_properties(minmax_distance=[200, 2000], minmax=[0.5, 10])
+    # print(d3.D3graph.adjmat.shape[0])
     for i in d3.D3graph.node_properties:
         if i in d3.D3graph.node_properties:
-            d3.D3graph.node_properties[i]['size'] = sizes_[i] / 1000
-    # d3.D3graph.node_properties['python']['size'] = 5000
-    print(d3.D3graph.node_properties)
+            d3.D3graph.node_properties[i]['size'] = sizes_[i] / 2000
+            d3.D3graph.node_properties[i]['fontsize'] = max(d3.D3graph.node_properties[i]['size'] * 0.5, 4)
+            d3.D3graph.node_properties[i]['fontcolor'] = '#16EE30'
+
+    for i in d3.D3graph.edge_properties:
+        if i in d3.D3graph.edge_properties:
+            d3.D3graph.edge_properties[i]['weight_scaled'] /= 2
+
+    # print(d3.D3graph.node_properties)
+    # print(d3.D3graph.edge_properties)
     # d3.D3graph.set_node_properties['size'] = sizes
     # d3.d3graph(df2, filepath='d3graph.html', charge = 400, showfig=False, size = 10)
-    d3.D3graph.set_edge_properties(minmax_distance=[200, 2000], minmax=[0.5, 10])
     d3.D3graph.show(filepath=os.path.join(output_path, output_name), showfig = False)
     
     divide_html_into_blocks(os.path.join(output_path, output_name))
-    return
-    # Change scaler
-    d3.d3graph(df, scaler='minmax')
-    #
-    # Change node properties
-    d3.D3graph.set_node_properties(color=None)
-    d3.D3graph.node_properties['size']=30
-    d3.D3graph.node_properties['color']='#FF0000'
-    d3.D3graph.node_properties['edge_color']='#000000'
-    d3.D3graph.node_properties['edge_size']=5
-    d3.D3graph.show()
-    #
-    # Change edge properties
-    d3.D3graph.set_edge_properties(directed=True, marker_end='arrow')
-    d3.D3graph.show()
-    #
-    # Node properties
-    d3.D3graph.node_properties
-    #
-    # Node properties
-    d3.D3graph.edge_properties
-    #
-    # After making changes, show the graph again using show()
-    d3.D3graph.show()
 
 def divide_html_into_blocks(path: str):
     def delete_title(text):
