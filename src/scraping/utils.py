@@ -60,7 +60,7 @@ def skills_connections_to_graph(input_name: str = 'skills_connections.json', out
         'edge_weights': edge_weights,
     }
 
-    write_json(graph, os.path.join(visualization_path, 'temp.json'))
+    write_json(graph, os.path.join(visualization_path, 'global_graph.json'))
 
 def write_json(_json, path: str):
     with open(path, 'w', encoding='utf-8') as f:

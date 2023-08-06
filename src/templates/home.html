@@ -10,10 +10,11 @@
 <body>
     <h1>Hello World</h1>
     {% csrf_token %}
-    <form action="#" method="get">
+    <!-- <form action="#" method="get">
         <input type="submit" class="btn" value="Generate Graph" name="gen_graph">
-    </form>
-    {% block body %}
+    </form> -->
+
+    {% block content %}
     {% endblock %}
 </body>
 </html>

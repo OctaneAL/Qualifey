@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from visualization.utils import visualize_graph
+from Qualifey.forms import FindForm
 
 def home_view(request):
     return render(request, 'home.html')
@@ -7,4 +8,14 @@ def home_view(request):
 def graph_view(request):
     if(request.GET.get('gen_graph')):
         visualize_graph()
-    return render(request, 'd3graph.html')
+    form = FindForm()
+    context = {}
+    context['form'] = form
+    context['show'] = False
+
+    language = request.GET.get('language')
+    if language:
+        context['show'] = True
+        print(language)
+
+    return render(request, 'graph.html', context=context)
