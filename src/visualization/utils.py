@@ -96,18 +96,58 @@ def divide_html_into_blocks(path: str):
 def get_graph(keyword: str, input_name: str = 'global_graph.json'):
     graph = read_json(os.path.join(input_path, input_name))
     
+    graph_dict = {} # (source, target): weight
+                    # !!! source lexicographically smaller than target
+
     source_list = []
     target_list = []
     weight_list = []
     nodes = {}
     nodes[keyword] = graph['node_sizes'][keyword]
 
-    for target in graph['edge_weights'][keyword]:
-        source_list.append(keyword)
-        target_list.append(target)
-        weight_list.append(graph['edge_weights'][keyword][target])
+    print(graph['edge_weights'])
 
+    # CHECK SUBSKILLS
+    for target in graph['edge_weights'][keyword]:
         nodes[target] = graph['node_sizes'][target]
+
+        source = keyword
+        if source > target:
+            source, target = target, source
+        print(source, target)
+        graph_dict[(source, target)] = graph['edge_weights'][source][target]
+
+        # source_list.append(keyword)
+        # target_list.append(target)
+        # weight_list.append(graph['edge_weights'][keyword][target])
+    
+    # connect to keyword???
+    # subskills???
+    # Create function to connect all nodes and edges (same code repeats twice)
+    for source_ in graph['edge_weights'][keyword]:
+        for target in graph['edge_weights'][source_]:
+            if source_ == target:
+                continue
+
+            print()
+            print(source_, target)
+            nodes[source_] = graph['node_sizes'][source_]
+            nodes[target] = graph['node_sizes'][target]
+
+            source = source_
+
+            if source > target:
+                source, target = target, source
+            print(source, target)
+            graph_dict[(source, target)] = graph['edge_weights'][source][target]
+    print(graph_dict)
+    source_list = []
+    target_list = []
+    weight_list = []
+    for pair in graph_dict:
+        source_list.append(pair[0])
+        target_list.append(pair[1])
+        weight_list.append(graph_dict[pair])
 
     edges = {
         'source': source_list,
@@ -123,12 +163,24 @@ def get_graph(keyword: str, input_name: str = 'global_graph.json'):
     return res
 
 def visualize_graph(graph, output_name: str = 'd3graph.html'):
+    def filter_edges(edges, k):
+        for i in range(len(edges['weight'])-1, -1, -1):
+            if edges['weight'][i] < k:
+                edges['source'].pop(i)
+                edges['target'].pop(i)
+                edges['weight'].pop(i)
+        return edges
+    print('BEFORE')
+    print(graph['edges'])
+    graph['edges'] = filter_edges(graph['edges'], 200)
+    print('AFTER')
+    print(graph['edges'])
     df = pd.DataFrame(graph['edges'])
 
     d3 = D3Blocks()
     
     d3.d3graph(df, filepath='temp.html', showfig = True, charge = 7000)
-    d3.D3graph.set_edge_properties(minmax_distance=[5, 1000], minmax=[0.5, 10])
+    d3.D3graph.set_edge_properties(minmax_distance=[50, 5000], minmax=[0.5, 10])
 
     for i in graph['nodes']:
         if i in d3.D3graph.node_properties:
