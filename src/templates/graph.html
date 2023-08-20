@@ -3,8 +3,16 @@
   <h1>Visualization</h1>
   <form method="GET" action="#">
     <div class="form-group">
-        {{ form.as_p }}
+        <select multiple data-placeholder="Add tools">
+          <!-- <option>Sketch</option>
+          <option>Framer X</option>
+          <option>Photoshop</option>
+          <option>Principle</option>
+          <option>Invision</option> -->
+        </select>
+        
     </div>
+    {{ form.as_p }}
     <input type="submit" class="btn" value="Згенерувати" name="submit">
   </form>
   {% if show %}
