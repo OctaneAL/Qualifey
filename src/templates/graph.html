@@ -1,18 +1,13 @@
 {% extends "home.html" %}
 {% block content %}
   <h1>Visualization</h1>
+    
   <form method="GET" action="#">
-    <div class="form-group">
-        <select multiple data-placeholder="Add tools">
-          <!-- <option>Sketch</option>
-          <option>Framer X</option>
-          <option>Photoshop</option>
-          <option>Principle</option>
-          <option>Invision</option> -->
-        </select>
-        
-    </div>
-    {{ form.as_p }}
+      <select id="id_language" name="language" class="js-select2-multi" multiple="multiple">
+        {% for val, title in choices %}
+          <option value="{{val}}">{{title}}</option> 
+        {% endfor%}
+      </select>
     <input type="submit" class="btn" value="Згенерувати" name="submit">
   </form>
   {% if show %}

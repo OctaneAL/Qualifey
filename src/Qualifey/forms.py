@@ -13,8 +13,9 @@ class FindForm(forms.Form):
         ('js', 'JS'),
         ('c++', 'C++'),
     )
-    language = forms.ChoiceField(
+    language = forms.MultipleChoiceField(
         choices = CHOICES,
         required = False,
-        label = 'Спеціальність'
+        label = 'Спеціальність',
+        widget=forms.Select(attrs={'multiple': True, 'data-placeholder': 'Add tools'})
     )

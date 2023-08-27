@@ -13,11 +13,16 @@ def graph_view(request):
     context['form'] = form
     context['show'] = False
 
-    language = request.GET.get('language')
-    if language:
+    context['choices'] = form.CHOICES
+
+    # language = request.GET.get('language')
+
+    request_ = dict(request.GET)
+    print(request.GET)
+    if 'language' in request_ and request_['language']:
+        print(request_['language'])
         context['show'] = True
-        print(language)
-        graph = get_graph(language)
+        graph = get_graph(request_['language'])
         visualize_graph(graph)
 
     return render(request, 'graph.html', context=context)
