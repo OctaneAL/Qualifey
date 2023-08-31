@@ -1,4 +1,14 @@
 from django import forms
+import json, os
+
+def get_all_keywords_keys(path: str = os.path.join(os.getcwd(), 'scraping', 'data', 'keywords.json')) -> list[str]:
+    data = read_json(path)
+
+    return list(data.keys())
+
+def read_json(path: str):
+    with open(path, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
 class FindForm(forms.Form):
     # language = forms.ModelChoiceField(
@@ -8,14 +18,11 @@ class FindForm(forms.Form):
     #     label='Специальность',
     # )
     CHOICES = (
-        ('python', 'Python'),
-        ('java', 'Java'),
-        ('js', 'JS'),
-        ('c++', 'C++'),
+        (i, i) for i in get_all_keywords_keys()
     )
     language = forms.MultipleChoiceField(
         choices = CHOICES,
         required = False,
         label = 'Спеціальність',
-        widget=forms.Select(attrs={'multiple': True, 'data-placeholder': 'Add tools'})
+        widget=forms.Select,
     )

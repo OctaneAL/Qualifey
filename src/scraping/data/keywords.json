@@ -14,12 +14,6 @@
     "oauth": [
         "oauth"
     ],
-    "gitops": [
-        "gitops",
-        "git-ops",
-        "git ops",
-        "git_ops"
-    ],
     "apim": [
         "apim"
     ],

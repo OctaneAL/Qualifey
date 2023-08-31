@@ -3,14 +3,12 @@
   <h1>Visualization</h1>
     
   <form method="GET" action="#">
-      <select id="id_language" name="language" class="js-select2-multi" multiple="multiple">
-        {% for val, title in choices %}
-          <option value="{{val}}">{{title}}</option> 
-        {% endfor%}
-      </select>
+      <div class="select">
+        {{form.language}}
+      </div>
     <input type="submit" class="btn" value="Згенерувати" name="submit">
   </form>
   {% if show %}
-  {% include "d3graph.html" %}
+  {% include path %}
   {% endif %}
 {% endblock %}

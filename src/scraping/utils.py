@@ -6,6 +6,7 @@ from art import text2art
 from progress.bar import FillingSquaresBar
 from collections import Counter
 from itertools import permutations
+from visualization.utils import visualize_graph
 
 ua = UserAgent()
 
@@ -390,6 +391,23 @@ def get_all_keywords(path: str = os.path.join(os.getcwd(), 'scraping', 'data', '
 
     return data
 
+def visualize_graphs(keywords):
+    art = text2art(f'VISUALIZATION')
+    print(art)
+
+    visualization_bar = FillingSquaresBar('Vacancies scraped', max = len(keywords))
+
+    start = time.time()
+
+    for keyword in keywords:
+        try:
+            visualize_graph(keyword)
+        except:
+            print('BAD:', keyword)
+        visualization_bar.next()
+    
+    print(f'\nVisualization done in {time.time() - start} seconds\n')
+
 def main(scrapeGraph: bool = False, scrapeAllDescriptionSkills: bool = False) -> None:
     if not scrapeGraph and not scrapeAllDescriptionSkills:
         return
@@ -420,11 +438,11 @@ def main(scrapeGraph: bool = False, scrapeAllDescriptionSkills: bool = False) ->
     print('Count of raw vacancies:', t)
     print()
 
-    # CHANGE IDS TO NEEDED FORMAT INSIDE FUNCTIONS
     if scrapeGraph:
         scrape_graphs(ids)
         convert_json_graphs(ids)
-    if scrapeAllDescriptionSkills: # DONE, just make code a little bit more beatiful
+        visualize_graphs(ids.keys())
+    if scrapeAllDescriptionSkills:
         scrape_all_description_skills(ids)
 
 # if __name__ == '__main__':

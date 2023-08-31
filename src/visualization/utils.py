@@ -1,4 +1,4 @@
-import os, json
+import os, json, hashlib
 import pandas as pd
 from d3blocks import D3Blocks
 from math import floor
@@ -93,33 +93,41 @@ def divide_html_into_blocks(path: str):
 
     write_html(path, text)
 
+def hash_code(s: str) -> str:
+    return str(hashlib.sha512(s.encode('utf-8')).hexdigest())
+
 # Do check for keyword correctness !!!
-def get_graph(keywords: list[str], input_name: str = 'global_graph.json'): # args = (keyword: str)
-    graph = read_json(os.path.join(input_path, input_name))
+def get_graph(keyword: str):
+    path = os.path.join(os.getcwd(), 'static', 'graphs_data', f'{hash_code(keyword)}.json')
+    graph = read_json(path)
     
     graph_dict = {} # (source, target): weight
                     # !!! source lexicographically smaller than target
 
-    nodes_list = set(keywords)
+    # nodes_list = set(keywords)
 
     source_list = []
     target_list = []
     weight_list = []
     nodes = {}
+    # print(graph['node_sizes'].keys())
+    # print(graph['edge_weights'].keys())
+    nodes_list = set(graph['edge_weights'][keyword])
+    nodes_list.add(keyword)
+    # print(list(nodes_list))
     # nodes[keyword] = graph['node_sizes'][keyword]
 
     # Get edge_weights for every possible edge
-    for keyword in keywords:
-        nodes_list.add(keyword)
-        for target in graph['edge_weights'][keyword]:
-            source = keyword
+    # nodes_list.add(keyword)
+    # for target in graph['edge_weights'][keyword]:
+    #     source = keyword
 
-            print(f'[...][{source}][{target}] = {graph["edge_weights"][source][target]}')
-            if graph['edge_weights'][source][target] < 200:
-                print('continue')
-                continue
-            print(f'ADD {target}')
-            nodes_list.add(target)
+    #     print(f'[...][{source}][{target}] = {graph["edge_weights"][source][target]}')
+    #     if graph['edge_weights'][source][target] < 200:
+    #         print('continue')
+    #         continue
+    #     print(f'ADD {target}')
+    #     nodes_list.add(target)
     
     # DO I NEED THIS ???
     
@@ -139,13 +147,9 @@ def get_graph(keywords: list[str], input_name: str = 'global_graph.json'): # arg
             
     #         graph_dict[(source, target)] = graph['edge_weights'][source][target]
 
-    # Connections with additional nodes
     for source_ in list(nodes_list):
         nodes[source_] = graph['node_sizes'][source_]
         for target in graph['edge_weights'][source_]:
-            if source_ == target or not target in nodes_list:
-                continue
-            
             nodes[target] = graph['node_sizes'][target]
 
             source = source_
@@ -156,9 +160,9 @@ def get_graph(keywords: list[str], input_name: str = 'global_graph.json'): # arg
             graph_dict[(source, target)] = graph['edge_weights'][source][target]
     
     # print(graph_dict)
-    print(list(nodes_list))
-    print(len(list(nodes_list)))
-    print('java' in nodes_list)
+    # print(list(nodes_list))
+    # print(len(list(nodes_list)))
+    # print('java' in nodes_list)
     for pair in graph_dict:
         source_list.append(pair[0])
         target_list.append(pair[1])
@@ -169,6 +173,8 @@ def get_graph(keywords: list[str], input_name: str = 'global_graph.json'): # arg
         'target': target_list,
         'weight': weight_list,
     }
+
+    # print(edges)
 
     res = {
         'edges': edges,
@@ -234,29 +240,69 @@ def get_graph(keywords: list[str], input_name: str = 'global_graph.json'): # arg
 
     return res
 
-def visualize_graph(graph, output_name: str = 'd3graph.html'):
+def visualize_graph(keyword: str):
     def filter_edges(edges, k):
-        for i in range(len(edges['weight'])-1, -1, -1):
-            if edges['weight'][i] < k:
-                edges['source'].pop(i)
-                edges['target'].pop(i)
-                edges['weight'].pop(i)
+        length = len(edges['source'])
+
+        count = 0
+        if length <= 10:
+            count = length
+        else:
+            count = max(10, length // 50)
+
+        edges['source'] = edges['source'][:count]
+        edges['target'] = edges['target'][:count]
+        edges['weight'] = edges['weight'][:count]
+
         return edges
+
+        # for i in range(len(edges['weight'])-1, -1, -1):
+        #     if edges['weight'][i] < k:
+        #         edges['source'].pop(i)
+        #         edges['target'].pop(i)
+        #         edges['weight'].pop(i)
+        # return edges
+    
+    def sort_edges(edges):
+        new = [(edges['source'][i], edges['target'][i], edges['weight'][i]) for i in range(len(edges['source']))]
+        new = sorted(new, key = lambda x: x[2], reverse = True)
+
+        return {
+            'source': [i[0] for i in new],
+            'target': [i[1] for i in new],
+            'weight': [i[2] for i in new],
+        }
     # print('BEFORE')
     # print(graph['edges'])
-    graph['edges'] = filter_edges(graph['edges'], 200)
-    # print('AFTER')
-    # print(graph['edges'])
+
+    output_path = os.path.join(os.getcwd(), 'static', 'd3graphs', f'{hash_code(keyword)}.html')
+
+    graph = get_graph(keyword=keyword)
+
+    # print(graph['edges'],'\n')
+    graph['edges'] = sort_edges(graph['edges'])
+
+
+    # !!!
+    # k1 - coefficient for edges (1/k1 edges will be visualizated)
+    # k2 - coefficient for nodes (all sizes will be multiplied by k2)
+    # !!!
+
+    k1 = 50
+    k2 = 130 / max(graph['nodes'].values())
+
+    graph['edges'] = filter_edges(graph['edges'], k1)
+
     df = pd.DataFrame(graph['edges'])
 
     d3 = D3Blocks()
     
-    d3.d3graph(df, filepath='temp.html', showfig = True, charge = 7000)
+    d3.d3graph(df, filepath=output_path, showfig = False, charge = 7000)
     d3.D3graph.set_edge_properties(minmax_distance=[50, 5000], minmax=[0.5, 10])
 
     for i in graph['nodes']:
         if i in d3.D3graph.node_properties:
-            d3.D3graph.node_properties[i]['size'] = graph['nodes'][i] / 100 # k
+            d3.D3graph.node_properties[i]['size'] = graph['nodes'][i] * k2
             d3.D3graph.node_properties[i]['fontsize'] = max(d3.D3graph.node_properties[i]['size'] * 0.5, 4)
             d3.D3graph.node_properties[i]['fontcolor'] = '#16EE30'
     
@@ -268,7 +314,9 @@ def visualize_graph(graph, output_name: str = 'd3graph.html'):
     # print(d3.D3graph.edge_properties)
     # d3.D3graph.set_node_properties['size'] = sizes
     # d3.d3graph(df2, filepath='d3graph.html', charge = 400, showfig=False, size = 10)
-    d3.D3graph.show(filepath='temp.html', showfig = True)
+    d3.D3graph.show(filepath=output_path, showfig = False)
+
+    divide_html_into_blocks(path = output_path)
 
 def write_json(_json, path: str):
     with open(path, 'w', encoding='utf-8') as f:

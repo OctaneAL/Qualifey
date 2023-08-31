@@ -1,3 +1,7 @@
+# large files
+d3graphs
+graphs_data
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
