@@ -18,10 +18,13 @@ class Graph(models.Model):
         return self.keyword.capitalize()
     
 class Skill(models.Model):
-    skill = models.CharField(max_length=64)
+    skill = models.CharField(
+        max_length=64,
+        unique=True,
+    )
 
     def __str__(self):
-        return self.skill.capitalize()
+        return self.skill
     
 class Vacancy_skill(models.Model):
     vacancy = models.ForeignKey('Vacancy', on_delete=models.CASCADE)
@@ -30,3 +33,6 @@ class Vacancy_skill(models.Model):
 class Skill_phrase(models.Model):
     skill = models.ForeignKey('Skill', on_delete=models.CASCADE)
     phrase = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.phrase
