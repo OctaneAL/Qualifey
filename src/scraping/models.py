@@ -11,11 +11,15 @@ class Vacancy(models.Model):
         return f'Graph #{self.job_id}'
 
 class Graph(models.Model):
-    keyword = models.CharField(max_length=64)
+    skill = models.OneToOneField(
+        'Skill',
+        on_delete=models.CASCADE,
+        default=None
+    )
     data = models.JSONField()
 
     def __str__(self):
-        return self.keyword.capitalize()
+        return Skill.objects.get(id = self.skill_id).skill
     
 class Skill(models.Model):
     skill = models.CharField(

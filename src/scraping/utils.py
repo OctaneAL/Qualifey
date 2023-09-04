@@ -8,15 +8,16 @@ from collections import Counter
 from itertools import permutations
 from visualization.utils import visualize_graph
 
+from scraping.models import Skill, Vacancy_skill, Skill_phrase, Graph, Vacancy
+
 ua = UserAgent()
 
 job_detail_link = 'https://www.dice.com/job-detail/%s'
 
-memo = {} # id: [skills]
-
 input_path = os.path.join(os.getcwd(), 'scraping', 'data')
 output_path = os.path.join(os.getcwd(), 'static', 'graphs_data')
 
+# good
 def convert_json_graph(keyword):
     def add_weight(source, target, weight):
         if not source in edge_weights:
@@ -30,10 +31,9 @@ def convert_json_graph(keyword):
             node_sizes[node] = 0
         node_sizes[node] += weight
 
-    path = os.path.join(os.getcwd(), 'static', 'graphs_data', f'{hash_code(keyword)}.json')
+    graph_id = Graph.objects.filter(skill_id = Skill.objects.filter(skill = keyword).id).id
+    data = Graph.objects.get(id = graph_id).data
 
-    # if exists...
-    data = read_json(path)
     items = data['items']
     # subskills_name = 'subskills.json'
     # subskills = read_json(subskills_name)
@@ -42,7 +42,6 @@ def convert_json_graph(keyword):
     node_sizes = {}
     edge_weights = {}
 
-    # memoization???
     for id in items.keys():
         weight = items[id]['count']
 
@@ -71,16 +70,19 @@ def convert_json_graph(keyword):
         'edge_weights': edge_weights,
     }
 
-    write_json(graph, path)
+    Graph.objects.filter(id = graph_id).update(data = graph)
 
+# good
 def convert_json_graphs(keywords):
     for keyword in keywords:
         convert_json_graph(keyword)
 
+# useless
 def write_json(_json, path: str):
     with open(path, 'w', encoding='utf-8') as f:
         json.dump(_json, f, indent = 4)
 
+# useless
 def read_json(path: str):
     with open(path, 'r', encoding='utf-8') as f:
         return json.load(f)
@@ -130,11 +132,13 @@ def get_job_ids(search: str, page_size: int, radius: int, page: int):
 
     return ids
 
+# good
 def is_word_in(word, s):
     if re.search(r"\b" + re.escape(word) + r"\b", s):
         return True
     return False
 
+# good ??? to review
 def get_skills_from_description(task, skills):
     global graph_bar, skills_list, cur_id
 
@@ -147,8 +151,9 @@ def get_skills_from_description(task, skills):
 
     id = task.get()
 
-    if id in memo:
-        _skills = memo[id]
+    if Vacancy.objects.filter(job_id = id).exists():
+        vacancy_id = Vacancy.objects.get(job_id = id).id
+        _skills = [Skill.objects.get(id = i.skill_id).skill for i in Vacancy_skill.objects.filter(vacancy_id = vacancy_id)]
         if _skills:
             id = find_skills(_skills)
             if id == -1:
@@ -187,11 +192,16 @@ def get_skills_from_description(task, skills):
                 _skills.append(skill_name)
                 break
     
+    # id - job_id 
+    # _skills - skill_ids
     _skills.sort()
-    memo[id] = _skills[:]
-
+    vacancy_id = Vacancy.objects.filter(job_id = id).id
+    if not Vacancy_skill.objects.filter(vacancy_id = vacancy_id).exists():
+        for skill_id in [Skill.objects.filter(skill = i).id for i in _skills]:
+            obj = Vacancy_skill(vacancy_id = vacancy_id, skill_id = skill_id)
+            obj.save()
+            
     if _skills:
-        
         id = find_skills(_skills)
         if id == -1:
             cur_id += 1
@@ -205,6 +215,7 @@ def get_skills_from_description(task, skills):
         # skills_list.append(_skills[:])
     graph_bar.next()
 
+# good
 def get_skills(task):
     global skills, skills_bar
 
@@ -231,10 +242,12 @@ def get_skills(task):
 
     skills_bar.next()
 
+# useless
 def write_to_file(_json, name):
     with open(name, 'w', encoding='utf-8') as f:
         json.dump(_json, f, indent = 4)
 
+# good
 def get_all_description_skills(task):
     global temp_bar, skills_dict
 
@@ -264,6 +277,7 @@ def get_all_description_skills(task):
 
     temp_bar.next()
 
+# bad, but we wont use it
 def scrape_all_description_skills(ids):
     global skills_dict, temp_bar
 
@@ -303,6 +317,7 @@ def scrape_all_description_skills(ids):
 
     print(f'\nScraping All Skills done in {time.time() - start} seconds\n')
 
+# bad, but we wont use it
 def scrape_skills(ids):
     global skills, skills_bar
 
@@ -331,9 +346,11 @@ def scrape_skills(ids):
 
     print(f'\nScraping Skills done in {time.time() - start} seconds\n')
 
+# good
 def hash_code(s: str) -> str:
     return str(hashlib.sha512(s.encode('utf-8')).hexdigest())
 
+# good 70/30, i need to convert JSON
 def scrape_graph(ids, search_keyword, skills):
     global graph_bar, skills_list, cur_id
 
@@ -369,9 +386,21 @@ def scrape_graph(ids, search_keyword, skills):
         'items': skills_list,
     }
     
-    write_to_file(res, name = os.path.join(output_path, f'{hash_code(search_keyword)}.json'))
+    # !!!
+    # CONVERT GRAPH
+    # !!!
 
-def scrape_graphs(ids):
+    # write to db | If exists - replace
+    skill_id = Skill.objects.get(skill = search_keyword).id
+    if Graph.objects.filter(skill_id = skill_id).exists():
+        Graph.objects.filter(skill_id = skill_id).update(data = res)
+    else:
+        obj = Graph(skill_id = skill_id, data = res)
+        obj.save()
+    # write_to_file(res, name = os.path.join(output_path, f'{hash_code(search_keyword)}.json'))
+
+# good
+def scrape_graphs(ids) -> None:
     skills = get_all_keywords()
 
     
@@ -381,16 +410,17 @@ def scrape_graphs(ids):
     art = text2art(f'ALL GRAPHS DONE')
     print(art)
 
-def get_all_keywords_keys(path: str = os.path.join(os.getcwd(), 'scraping', 'data', 'keywords.json')) -> list[str]:
-    data = read_json(path)
+# good
+def get_all_keywords_keys() -> list[str]:
+    return [obj.skill for obj in Skill.objects.all()]
 
-    return list(data.keys())
+# good
+def get_all_keywords() -> list[str]:
+    return {
+        i: [j.phrase for j in Skill_phrase.objects.filter(skill = Skill.objects.get(skill = i).id)] for i in get_all_keywords_keys()
+    }
 
-def get_all_keywords(path: str = os.path.join(os.getcwd(), 'scraping', 'data', 'keywords.json')) -> list[str]:
-    data = read_json(path)
-
-    return data
-
+# good
 def visualize_graphs(keywords):
     art = text2art(f'VISUALIZATION')
     print(art)
@@ -408,6 +438,7 @@ def visualize_graphs(keywords):
     
     print(f'\nVisualization done in {time.time() - start} seconds\n')
 
+# to review
 def main(scrapeGraph: bool = False, scrapeAllDescriptionSkills: bool = False) -> None:
     if not scrapeGraph and not scrapeAllDescriptionSkills:
         return

@@ -1,14 +1,6 @@
 from django import forms
 import json, os
-
-def get_all_keywords_keys(path: str = os.path.join(os.getcwd(), 'scraping', 'data', 'keywords.json')) -> list[str]:
-    data = read_json(path)
-
-    return list(data.keys())
-
-def read_json(path: str):
-    with open(path, 'r', encoding='utf-8') as f:
-        return json.load(f)
+from scraping.utils import get_all_keywords_keys
 
 class FindForm(forms.Form):
     # language = forms.ModelChoiceField(
@@ -17,6 +9,8 @@ class FindForm(forms.Form):
     #     # widget=forms.Select(attrs={'class': 'form-control my-2'}),
     #     label='Специальность',
     # )
+
+    # !!! GET FROM DB !!!
     CHOICES = (
         (i, i) for i in get_all_keywords_keys()
     )
