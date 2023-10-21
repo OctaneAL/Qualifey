@@ -2,6 +2,7 @@ import os, json, hashlib
 import pandas as pd
 from d3blocks import D3Blocks
 from math import floor
+from scraping.models import Skill, Graph
 
 input_path = os.path.join(os.getcwd(), 'visualization', 'data')
 output_path = os.path.join(os.getcwd(), 'templates')
@@ -49,10 +50,6 @@ def visualize_global_graph(input_name: str = 'global_graph.json', output_name: s
         if i in d3.D3graph.edge_properties:
             d3.D3graph.edge_properties[i]['weight_scaled'] /= 2
 
-    print(d3.D3graph.node_properties)
-    # print(d3.D3graph.edge_properties)
-    # d3.D3graph.set_node_properties['size'] = sizes
-    # d3.d3graph(df2, filepath='d3graph.html', charge = 400, showfig=False, size = 10)
     d3.D3graph.show(filepath=os.path.join(output_path, output_name), showfig = False)
     
     divide_html_into_blocks(os.path.join(output_path, output_name))
@@ -98,55 +95,22 @@ def hash_code(s: str) -> str:
 
 # Do check for keyword correctness !!!
 def get_graph(keyword: str):
-    path = os.path.join(os.getcwd(), 'static', 'graphs_data', f'{hash_code(keyword)}.json')
-    graph = read_json(path)
+    # path = os.path.join(os.getcwd(), 'static', 'graphs_data', f'{hash_code(keyword)}.json')
+    # graph = read_json(path)
+
+    graph = Graph.objects.get(skill_id = Skill.objects.get(skill = keyword).id).data
     
     graph_dict = {} # (source, target): weight
                     # !!! source lexicographically smaller than target
-
-    # nodes_list = set(keywords)
 
     source_list = []
     target_list = []
     weight_list = []
     nodes = {}
-    # print(graph['node_sizes'].keys())
-    # print(graph['edge_weights'].keys())
+
     nodes_list = set(graph['edge_weights'][keyword])
     nodes_list.add(keyword)
-    # print(list(nodes_list))
-    # nodes[keyword] = graph['node_sizes'][keyword]
-
-    # Get edge_weights for every possible edge
-    # nodes_list.add(keyword)
-    # for target in graph['edge_weights'][keyword]:
-    #     source = keyword
-
-    #     print(f'[...][{source}][{target}] = {graph["edge_weights"][source][target]}')
-    #     if graph['edge_weights'][source][target] < 200:
-    #         print('continue')
-    #         continue
-    #     print(f'ADD {target}')
-    #     nodes_list.add(target)
     
-    # DO I NEED THIS ???
-    
-    # Connections with main nodes
-    # for keyword in keywords:
-    #     nodes[keyword] = graph['node_sizes'][keyword]
-    #     for target in graph['edge_weights'][keyword]:
-    #         if keyword == target or not target in nodes_list:
-    #             continue
-            
-    #         nodes[target] = graph['node_sizes'][target]
-
-    #         source = keyword
-
-    #         if source > target:
-    #             source, target = target, source
-            
-    #         graph_dict[(source, target)] = graph['edge_weights'][source][target]
-
     for source_ in list(nodes_list):
         nodes[source_] = graph['node_sizes'][source_]
         for target in graph['edge_weights'][source_]:
@@ -159,69 +123,6 @@ def get_graph(keyword: str):
             
             graph_dict[(source, target)] = graph['edge_weights'][source][target]
     
-    # print(graph_dict)
-    # print(list(nodes_list))
-    # print(len(list(nodes_list)))
-    # print('java' in nodes_list)
-    for pair in graph_dict:
-        source_list.append(pair[0])
-        target_list.append(pair[1])
-        weight_list.append(graph_dict[pair])
-
-    edges = {
-        'source': source_list,
-        'target': target_list,
-        'weight': weight_list,
-    }
-
-    # print(edges)
-
-    res = {
-        'edges': edges,
-        'nodes': nodes,
-    }
-
-    return res
-
-    print(graph['edge_weights'])
-
-    # CHECK SUBSKILLS
-    for target in graph['edge_weights'][keyword]:
-        nodes[target] = graph['node_sizes'][target]
-
-        source = keyword
-        if source > target:
-            source, target = target, source
-        print(source, target)
-        graph_dict[(source, target)] = graph['edge_weights'][source][target]
-
-        # source_list.append(keyword)
-        # target_list.append(target)
-        # weight_list.append(graph['edge_weights'][keyword][target])
-    
-    # connect to keyword???
-    # subskills???
-    # Create function to connect all nodes and edges (same code repeats twice)
-    for source_ in graph['edge_weights'][keyword]:
-        for target in graph['edge_weights'][source_]:
-            if source_ == target:
-                continue
-
-            print()
-            print(source_, target)
-            nodes[source_] = graph['node_sizes'][source_]
-            nodes[target] = graph['node_sizes'][target]
-
-            source = source_
-
-            if source > target:
-                source, target = target, source
-            print(source, target)
-            graph_dict[(source, target)] = graph['edge_weights'][source][target]
-    print(graph_dict)
-    source_list = []
-    target_list = []
-    weight_list = []
     for pair in graph_dict:
         source_list.append(pair[0])
         target_list.append(pair[1])
@@ -255,13 +156,6 @@ def visualize_graph(keyword: str):
         edges['weight'] = edges['weight'][:count]
 
         return edges
-
-        # for i in range(len(edges['weight'])-1, -1, -1):
-        #     if edges['weight'][i] < k:
-        #         edges['source'].pop(i)
-        #         edges['target'].pop(i)
-        #         edges['weight'].pop(i)
-        # return edges
     
     def sort_edges(edges):
         new = [(edges['source'][i], edges['target'][i], edges['weight'][i]) for i in range(len(edges['source']))]
@@ -272,14 +166,11 @@ def visualize_graph(keyword: str):
             'target': [i[1] for i in new],
             'weight': [i[2] for i in new],
         }
-    # print('BEFORE')
-    # print(graph['edges'])
 
     output_path = os.path.join(os.getcwd(), 'static', 'd3graphs', f'{hash_code(keyword)}.html')
 
     graph = get_graph(keyword=keyword)
 
-    # print(graph['edges'],'\n')
     graph['edges'] = sort_edges(graph['edges'])
 
 
@@ -310,10 +201,6 @@ def visualize_graph(keyword: str):
         if i in d3.D3graph.edge_properties:
             d3.D3graph.edge_properties[i]['weight_scaled'] /= 2
 
-    # print(d3.D3graph.node_properties)
-    # print(d3.D3graph.edge_properties)
-    # d3.D3graph.set_node_properties['size'] = sizes
-    # d3.d3graph(df2, filepath='d3graph.html', charge = 400, showfig=False, size = 10)
     d3.D3graph.show(filepath=output_path, showfig = False)
 
     divide_html_into_blocks(path = output_path)

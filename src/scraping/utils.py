@@ -16,6 +16,45 @@ job_detail_link = 'https://www.dice.com/job-detail/%s'
 
 input_path = os.path.join(os.getcwd(), 'scraping', 'data')
 output_path = os.path.join(os.getcwd(), 'static', 'graphs_data')
+memo = {} # id: {skills: list, company: str}
+
+memo_graph = {}
+
+memo_vacancy = {}
+
+memo_skill = {}
+
+memo_vacancy_skill = {}
+
+skill_to_id = {}
+
+def load_memo_graph():
+    graphs = Graph.objects.all()
+    for graph in graphs:
+        memo_graph[graph.skill_id] = graph
+
+def load_memo_vacancy():
+    vacancies = Vacancy.objects.all()
+    for vacancy in vacancies:
+        memo_vacancy[vacancy.job_id] = vacancy
+
+def load_memo_skill():
+    skills = Skill.objects.all()
+    for skill in skills:
+        memo_skill[skill.id] = skill
+
+def load_skill_to_id():
+    skills = Skill.objects.all()
+    for skill in skills:
+        skill_to_id[skill.skill] = skill.id
+
+def load_memo_vacancy_skill():
+    vacancy_skills = Vacancy_skill.objects.all()
+    for vacancy_skill in vacancy_skills:
+        if vacancy_skill.vacancy_id in memo_vacancy_skill:
+            memo_vacancy_skill[vacancy_skill.vacancy_id].append(vacancy_skill.skill_id)
+        else:
+            memo_vacancy_skill[vacancy_skill.vacancy_id] = [vacancy_skill.skill_id]
 
 # good
 def convert_json_graph(keyword):
@@ -31,8 +70,11 @@ def convert_json_graph(keyword):
             node_sizes[node] = 0
         node_sizes[node] += weight
 
-    graph_id = Graph.objects.filter(skill_id = Skill.objects.filter(skill = keyword).id).id
-    data = Graph.objects.get(id = graph_id).data
+    # graph_id = Graph.objects.get(skill_id = Skill.objects.get(skill = keyword).id).id # skill_to_id
+    skill_id = skill_to_id[keyword]
+    obj = memo_graph[skill_id]
+    graph_id = obj.id
+    data = obj.data
 
     items = data['items']
     # subskills_name = 'subskills.json'
@@ -70,7 +112,10 @@ def convert_json_graph(keyword):
         'edge_weights': edge_weights,
     }
 
-    Graph.objects.filter(id = graph_id).update(data = graph)
+    obj.data = graph
+    obj.save()
+
+    # Graph.objects.filter(id = graph_id).update(data = graph)
 
 # good
 def convert_json_graphs(keywords):
@@ -151,9 +196,13 @@ def get_skills_from_description(task, skills):
 
     id = task.get()
 
-    if Vacancy.objects.filter(job_id = id).exists():
-        vacancy_id = Vacancy.objects.get(job_id = id).id
-        _skills = [Skill.objects.get(id = i.skill_id).skill for i in Vacancy_skill.objects.filter(vacancy_id = vacancy_id)]
+    # if Vacancy.objects.filter(job_id = id).exists():
+    if id in memo_vacancy:
+        # vacancy_id = Vacancy.objects.get(job_id = id).id
+        vacancy_id = memo_vacancy[id].id
+        
+        # _skills = [Skill.objects.get(id = i.skill_id).skill for i in Vacancy_skill.objects.filter(vacancy_id = vacancy_id)] # memo_skill
+        _skills = [memo_skill[skill_id].skill for skill_id in memo_vacancy_skill[vacancy_id]]
         if _skills:
             id = find_skills(_skills)
             if id == -1:
@@ -184,6 +233,13 @@ def get_skills_from_description(task, skills):
         # print(link) # write into logs
         pass
 
+    company_name = None
+    try:
+        el = soup.find('a', {'data-cy': 'companyNameLink'})
+        company_name = el.text
+    except:
+        pass
+
     # description = ' ' + description + ' '
 
     for skill_name in skills:
@@ -195,11 +251,23 @@ def get_skills_from_description(task, skills):
     # id - job_id 
     # _skills - skill_ids
     _skills.sort()
-    vacancy_id = Vacancy.objects.filter(job_id = id).id
-    if not Vacancy_skill.objects.filter(vacancy_id = vacancy_id).exists():
-        for skill_id in [Skill.objects.filter(skill = i).id for i in _skills]:
+
+    if not id in memo_vacancy:
+        obj = Vacancy(job_id = id, company = company_name)
+        obj.save()
+        memo_vacancy[id] = obj
+    vacancy_id = memo_vacancy[id].id
+
+    if not vacancy_id in memo_vacancy_skill:
+        for skill_id in [skill_to_id[i] for i in _skills]:
             obj = Vacancy_skill(vacancy_id = vacancy_id, skill_id = skill_id)
             obj.save()
+
+            if not vacancy_id in memo_vacancy_skill:
+                memo_vacancy_skill[vacancy_id] = [skill_id]
+            else:
+                memo_vacancy_skill[vacancy_id].append(skill_id)
+
             
     if _skills:
         id = find_skills(_skills)
@@ -346,7 +414,7 @@ def scrape_skills(ids):
 
     print(f'\nScraping Skills done in {time.time() - start} seconds\n')
 
-# good
+# useless
 def hash_code(s: str) -> str:
     return str(hashlib.sha512(s.encode('utf-8')).hexdigest())
 
@@ -370,12 +438,14 @@ def scrape_graph(ids, search_keyword, skills):
     cur_id = 0
     graph_bar = FillingSquaresBar('Vacancies scraped', max = len(ids))
 
-    for _ in range(len(ids)):
-        threading.Thread(target=get_skills_from_description, args=(task, skills)).start()
+    while ids:
+        for _ in range(min(len(ids), 50)):
+            threading.Thread(target=get_skills_from_description, args=(task, skills)).start()
+            ids.pop(0)
 
-    while True:
-        if threading.active_count() == 1:
-            break
+        while True:
+            if threading.active_count() == 1:
+                break
 
     print(f'\nScraping graph done in {time.time() - start} seconds\n')
 
@@ -391,12 +461,17 @@ def scrape_graph(ids, search_keyword, skills):
     # !!!
 
     # write to db | If exists - replace
-    skill_id = Skill.objects.get(skill = search_keyword).id
-    if Graph.objects.filter(skill_id = skill_id).exists():
-        Graph.objects.filter(skill_id = skill_id).update(data = res)
+    skill_id = skill_to_id[search_keyword] # skill_to_id {}
+
+    # if Graph.objects.filter(skill_id = skill_id).exists():
+    if skill_id in memo_graph:
+        memo_graph[skill_id].data = res
+        memo_graph[skill_id].save()
+        # Graph.objects.filter(skill_id = skill_id).update(data = res)
     else:
         obj = Graph(skill_id = skill_id, data = res)
         obj.save()
+        memo_graph[skill_id] = obj
     # write_to_file(res, name = os.path.join(output_path, f'{hash_code(search_keyword)}.json'))
 
 # good
@@ -412,12 +487,13 @@ def scrape_graphs(ids) -> None:
 
 # good
 def get_all_keywords_keys() -> list[str]:
+    return [memo_skill[i].skill for i in memo_skill]
     return [obj.skill for obj in Skill.objects.all()]
 
 # good
 def get_all_keywords() -> list[str]:
     return {
-        i: [j.phrase for j in Skill_phrase.objects.filter(skill = Skill.objects.get(skill = i).id)] for i in get_all_keywords_keys()
+        i: [j.phrase for j in Skill_phrase.objects.filter(skill = Skill.objects.get(skill = i).id)] for i in get_all_keywords_keys() # skill_to_id {}
     }
 
 # good
@@ -442,8 +518,16 @@ def visualize_graphs(keywords):
 def main(scrapeGraph: bool = False, scrapeAllDescriptionSkills: bool = False) -> None:
     if not scrapeGraph and not scrapeAllDescriptionSkills:
         return
+    
+    load_memo_graph()
+    load_memo_skill()
+    load_memo_vacancy()
+    load_memo_vacancy_skill()
+    load_skill_to_id()
 
-    search_keywords = get_all_keywords_keys()
+    search_keywords = get_all_keywords_keys()[-20:-6]
+    
+    print(search_keywords)
 
     ids = {}
     for keyword in search_keywords:
@@ -460,7 +544,7 @@ def main(scrapeGraph: bool = False, scrapeAllDescriptionSkills: bool = False) ->
             except:
                 print()
                 break
-        ids[keyword] = keyword_ids[:]
+        ids[keyword] = keyword_ids[:101]
 
     t = 0
     for i in ids:
