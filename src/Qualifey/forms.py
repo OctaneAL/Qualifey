@@ -1,6 +1,7 @@
 from django import forms
 import json, os
 from scraping.utils import get_all_keywords_keys
+from scraping.models import Skill
 
 class FindForm(forms.Form):
     # language = forms.ModelChoiceField(
@@ -12,7 +13,7 @@ class FindForm(forms.Form):
 
     # !!! GET FROM DB !!!
     CHOICES = (
-        (i, i) for i in get_all_keywords_keys()
+        (i.skill, i.skill) for i in Skill.objects.all()
     )
     language = forms.MultipleChoiceField(
         choices = CHOICES,

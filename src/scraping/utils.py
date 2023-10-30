@@ -197,7 +197,7 @@ def get_skills_from_description(task, skills):
     id = task.get()
 
     # if Vacancy.objects.filter(job_id = id).exists():
-    if id in memo_vacancy:
+    if id in memo_vacancy and memo_vacancy[id].id in memo_vacancy_skill:
         # vacancy_id = Vacancy.objects.get(job_id = id).id
         vacancy_id = memo_vacancy[id].id
         
@@ -525,7 +525,11 @@ def main(scrapeGraph: bool = False, scrapeAllDescriptionSkills: bool = False) ->
     load_memo_vacancy_skill()
     load_skill_to_id()
 
-    search_keywords = get_all_keywords_keys()[-20:-6]
+    # print(skill_to_id.keys())
+    # print(memo_vacancy_skill.keys())
+    # print(memo_vacancy_skill[1223])
+
+    search_keywords = get_all_keywords_keys() # [-7:-6]
     
     print(search_keywords)
 
@@ -544,7 +548,7 @@ def main(scrapeGraph: bool = False, scrapeAllDescriptionSkills: bool = False) ->
             except:
                 print()
                 break
-        ids[keyword] = keyword_ids[:101]
+        ids[keyword] = keyword_ids
 
     t = 0
     for i in ids:
