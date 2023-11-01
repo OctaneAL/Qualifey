@@ -1,74 +1,14 @@
-:root {
-  --background-gradient: linear-gradient(30deg, #f39c12 30%, #f1c40f);
-  --gray: #34495e;
-  --darkgray: #2c3e50;
-}
-
-select {
-  /* Reset Select */
-  appearance: none;
-  outline: 0;
-  border: 0;
-  box-shadow: none;
-  /* Personalize */
-  flex: 1;
-  padding: 0 1em;
-  color: #fff;
-  background-color: var(--darkgray);
-  background-image: none;
-  cursor: pointer;
-}
-/* Remove IE arrow */
-select::-ms-expand {
-  display: none;
-}
-/* Custom Select wrapper */
-.select {
-  position: relative;
-  display: flex;
-  width: 20em;
-  height: 3em;
-  border-radius: .25em;
-  overflow: hidden;
-}
-/* Arrow */
-.select::after {
-  content: '\25BC';
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 1em;
-  background-color: #34495e;
-  transition: .25s all ease;
-  pointer-events: none;
-}
-/* Transition */
-.select:hover::after {
-  color: #f39c12;
-}
-
-/* Other styles*/
-body {
-  color: #fff;
-  background: var(--background-gradient);
-}
-h1 {
-  margin: 0 0 0.25em;
-}
-a {
-  font-weight: bold;
-  color: var(--gray);
-  text-decoration: none;
-  padding: .25em;
-  border-radius: .25em;
-  background: white;
-}
 
 
 
 
 
 
+
+
+
+
+/* Please ❤ this if you like it! */
 
 
 
@@ -254,11 +194,19 @@ body{
 	transform: translateY(-50%);
 	z-index: 20;
 }
+h3 {
+	font-size: 36px;
+	line-height: 1.2;
+	font-weight: 700;
+	text-align: center;
+}
+.btn {
+	color: #ffffff;
+}
 h1{
 	font-size: 48px;
 	line-height: 1.2;
 	font-weight: 700;
-	color: #212112;
 	text-align: center;
 }
 p{
@@ -274,6 +222,10 @@ body.hero-anime p{
 	opacity: 0;
 	transform: translateY(40px);
     transition-delay: 1700ms;
+}
+select {
+	display: block;
+	margin: 0 auto;
 }
 h1 span{
 	display: inline-block;
@@ -608,4 +560,27 @@ body.dark .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
 }
 body.dark .logo img {
   filter: brightness(100%);
+}
+
+
+/* Generate button */
+
+input[type='submit'] {
+	font-family: inherit;
+}
+.btn {
+	display: block;
+	margin: 1rem auto;
+	font-size: 1rem;
+	padding: 0.5rem 2rem;
+	background: #fff;
+	border: 1px solid #4e598c;
+	color: #4e598c;
+	border-radius: 2rem;
+	transition: 200ms;
+	position: relative;
+}
+.btn:hover {
+	background: #4e598c;
+	color: #fff;
 }

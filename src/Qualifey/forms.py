@@ -13,7 +13,7 @@ class FindForm(forms.Form):
 
     # !!! GET FROM DB !!!
     CHOICES = (
-        (i.skill, i.skill) for i in Skill.objects.all()
+        sorted((i.skill, i.skill) for i in Skill.objects.all())
     )
     language = forms.MultipleChoiceField(
         choices = CHOICES,
