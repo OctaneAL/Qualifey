@@ -16,7 +16,8 @@
 	
 
 	<link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-    <title>Document</title>
+    <title>Qualifey</title>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     {% block head %}
     {% endblock %}
 </head>
@@ -45,36 +46,37 @@
 						
 						<div class="collapse navbar-collapse" id="navbarSupportedContent">
 							<ul class="navbar-nav ml-auto py-4 py-md-0">
-								<li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4 active">
-									<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Home</a>
-									<div class="dropdown-menu">
-										<a class="dropdown-item" href="#">Action</a>
-										<a class="dropdown-item" href="#">Another action</a>
-										<a class="dropdown-item" href="#">Something else here</a>
-										<a class="dropdown-item" href="#">Another action</a>
-									</div>
+								<li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4{% if request.resolver_match.url_name == 'home' %} active{% endif %}">
+									<a class="nav-link" href="{% url 'home' %}">Home</a>
 								</li>
-								<li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
-									<a class="nav-link" href="#">Portfolio</a>
+								<li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4{% if request.resolver_match.url_name == 'graph' %} active{% endif %}">
+									<a class="nav-link" href="{% url 'graph' %}">Graphs</a>
 								</li>
-								<li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+								<!-- <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
 									<a class="nav-link" href="#">Agency</a>
-								</li>
-								<li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
-									<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Services</a>
+								</li> -->
+								<li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4"> <!-- Дописывать в этот li класс "active" -->
+									<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Companies</a>
 									<div class="dropdown-menu">
-										<a class="dropdown-item" href="#">Action</a>
-										<a class="dropdown-item" href="#">Another action</a>
-										<a class="dropdown-item" href="#">Something else here</a>
-										<a class="dropdown-item" href="#">Another action</a>
+										<a class="dropdown-item" href="#">By Salaries</a>
+										<a class="dropdown-item" href="#">By Vacancies</a>
+										<a class="dropdown-item" href="#">Search</a>
 									</div>
 								</li>
 								<li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+									<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Skills</a>
+									<div class="dropdown-menu">
+										<a class="dropdown-item" href="#">By Salaries</a>
+										<a class="dropdown-item" href="#">By Vacancies</a>
+										<a class="dropdown-item" href="#">Search</a>
+									</div>
+								</li>
+								<!-- <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
 									<a class="nav-link" href="#">Journal</a>
 								</li>
 								<li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
 									<a class="nav-link" href="#">Contact</a>
-								</li>
+								</li> -->
 							</ul>
 						</div>
 						
@@ -108,8 +110,12 @@
 			</div> -->
 		</div>
 	</div>
-	<div class="my-5 py-5">
-	</div>
+
+
+
+	<!-- TO EXTEND HTML PAGE - USE THIS DIV -->
+	<!-- <div class="my-5 py-5">
+	</div> -->
 
 <!-- Link to page
 ================================================== -->
@@ -117,6 +123,5 @@
 	<a href="https://front.codes/" class="logo" target="_blank">
 		<img src="https://assets.codepen.io/1462889/fcy.png" alt="">
 	</a>
-
 </body>
 </html>

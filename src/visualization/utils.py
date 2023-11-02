@@ -71,12 +71,22 @@ def divide_html_into_blocks(path: str):
     
     def delete_useless_scripts(text):
         return text.replace("<script async src='https://media.ethicalads.io/media/client/ethicalads.min.js'></script>", "")
+    
+    def change_insert_position(text):
+        return text.replace('var svg = d3.select("body").append("svg")', 'var svg = d3.select("h3").append("svg")')
+    
+    def change_text(text):
+        return text.replace('Edge Threshold', 'Edge Threshold<br>')
 
     # print(path)
 
     text = read_html(path)
 
     text = get_body_block(text)
+
+    text = change_insert_position(text)
+
+    text = change_text(text)
 
     # text = delete_useless_scripts(text)
 
@@ -100,6 +110,9 @@ def get_graph(keyword: str):
 
     graph = Graph.objects.get(skill_id = Skill.objects.get(skill = keyword).id).data
     
+    if not keyword in graph['edge_weights']: # graph is empty
+        return None
+
     graph_dict = {} # (source, target): weight
                     # !!! source lexicographically smaller than target
 
@@ -167,9 +180,13 @@ def visualize_graph(keyword: str):
             'weight': [i[2] for i in new],
         }
 
-    output_path = os.path.join(os.getcwd(), 'static', 'd3graphs', f'{hash_code(keyword)}.html')
+    output_path = os.path.join(os.getcwd(), 'templates', 'd3graphs', f'{hash_code(keyword)}.html')
 
     graph = get_graph(keyword=keyword)
+
+    if graph == None:
+        write_html(output_path, 'no data :(')
+        return
 
     graph['edges'] = sort_edges(graph['edges'])
 

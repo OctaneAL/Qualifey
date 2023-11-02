@@ -5,13 +5,11 @@
 
 
 
-
-
-
-/* Please ❤ this if you like it! */
-
-
-
+svg {
+  	margin-left: auto; 
+  	margin-right: auto; 
+  	width: 1200px; /* Need a specific value to work */
+}
 
 /* Please ❤ this if you like it! */
 
@@ -195,7 +193,7 @@ body{
 	z-index: 20;
 }
 h3 {
-	font-size: 36px;
+	font-size: 24px;
 	line-height: 1.2;
 	font-weight: 700;
 	text-align: center;
