@@ -252,10 +252,45 @@ def get_skills_from_description(task, skills):
     # _skills - skill_ids
     _skills.sort()
 
+    salary = soup.find('div', {'data-cy': 'payDetails'})
+    nums = []
+    
+    if salary != None:
+        salary = salary.findChild().text
+        salary = clear_salary_string(salary)
+
+        nums = salary.split('-')
+
+    has_salary = yearly = True
+    salary_min = salary_max = None
+
+    if len(nums) < 1 or len(nums) > 2:
+        has_salary = False
+    elif len(nums) == 1:
+        salary_min = salary_max = int(nums[0])
+
+        if salary_min < 500:
+            yearly = False
+    elif len(nums) == 2:
+        salary_min = int(nums[0])
+        salary_max = int(nums[1])
+
+        if salary_min < 500:
+            yearly = False
+
     if not id in memo_vacancy:
-        obj = Vacancy(job_id = id, company = company_name)
+        obj = Vacancy(job_id = id, company = company_name, has_salary = has_salary, salary_min = salary_min, salary_max = salary_max, yearly_salary = yearly)
         obj.save()
         memo_vacancy[id] = obj
+    elif True: # elif EditExisting !!!!!!!!!!!!!!!!!!!!!!!!!!
+        obj = memo_vacancy[id]
+        obj.company = company_name
+        obj.has_salary = has_salary
+        obj.salary_min = salary_min
+        obj.salary_max = salary_max
+        obj.yearly_salary = yearly
+        obj.save()
+
     vacancy_id = memo_vacancy[id].id
 
     if not vacancy_id in memo_vacancy_skill:
@@ -267,6 +302,8 @@ def get_skills_from_description(task, skills):
                 memo_vacancy_skill[vacancy_id] = [skill_id]
             else:
                 memo_vacancy_skill[vacancy_id].append(skill_id)
+    elif False: # elif EditExisting !!!!!!!!!!
+        pass
 
             
     if _skills:
@@ -413,6 +450,14 @@ def scrape_skills(ids):
     write_to_file(skills, name = os.path.join(input_path, 'keywords.json'))
 
     print(f'\nScraping Skills done in {time.time() - start} seconds\n')
+
+def clear_salary_string(salary: str) -> str:
+    res = ''
+    for i in salary:
+        if '0' <= i <= '9' or i == '-':
+            res += i
+    
+    return res
 
 # useless
 def hash_code(s: str) -> str:

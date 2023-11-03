@@ -3,9 +3,14 @@ from django.db import models
 class Vacancy(models.Model):
     job_id = models.CharField(max_length=128)
     company = models.CharField(max_length=128, blank = True, null = True)
-    salary = models.BigIntegerField(blank = True, null = True)
+    # salary = models.BigIntegerField(blank = True, null = True)
     country = models.CharField(max_length=64, blank = True, null = True)
     city = models.CharField(max_length=64, blank = True, null = True)
+
+    has_salary = models.BooleanField(blank = True, null = True, default = None)
+    salary_min = models.IntegerField(blank = True, null = True, default = None)
+    salary_max = models.IntegerField(blank = True, null = True, default = None)
+    yearly_salary = models.BooleanField(blank = True, null = True, default = None)
     
     def __str__(self):
         return str(self.job_id)
