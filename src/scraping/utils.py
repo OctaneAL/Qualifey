@@ -8,7 +8,7 @@ from collections import Counter
 from itertools import permutations
 from visualization.utils import visualize_graph
 
-from scraping.models import Skill, Vacancy_skill, Skill_phrase, Graph, Vacancy
+from scraping.models import Skill, Vacancy_skill, Skill_phrase, Graph, Vacancy, Company
 
 ua = UserAgent()
 
@@ -26,7 +26,17 @@ memo_skill = {}
 
 memo_vacancy_skill = {}
 
+memo_company = {}
+
 skill_to_id = {}
+
+global EditExistingFlag
+EditExistingFlag = False
+
+def load_memo_company():
+    companies = Company.objects.all()
+    for company in companies:
+        memo_company[company.name] = company.id
 
 def load_memo_graph():
     graphs = Graph.objects.all()
@@ -185,7 +195,9 @@ def is_word_in(word, s):
 
 # good ??? to review
 def get_skills_from_description(task, skills):
-    global graph_bar, skills_list, cur_id
+    global graph_bar, skills_list, cur_id, EditExistingFlag
+
+    # print('EditExistingFlag =', EditExistingFlag)
 
     def find_skills(_skills):
         _skills_list = skills_list.copy()
@@ -240,6 +252,11 @@ def get_skills_from_description(task, skills):
     except:
         pass
 
+    if not company_name in memo_company and company_name != None:
+        obj = Company(name = company_name)
+        obj.save()
+        memo_company[obj.name] = obj.id
+
     # description = ' ' + description + ' '
 
     for skill_name in skills:
@@ -264,27 +281,88 @@ def get_skills_from_description(task, skills):
     has_salary = yearly = True
     salary_min = salary_max = None
 
+
+
+    # ---------
+    # WARNING
+    # GOVNO-KOD
+    # ---------
+    
+    # ---------
+    # WARNING
+    # GOVNO-KOD
+    # ---------
+    
+    # ---------
+    # WARNING
+    # GOVNO-KOD
+    # ---------
+    
+    # ---------
+    # WARNING
+    # GOVNO-KOD
+    # ---------
+
+    # print(id, '| nums =', nums)
     if len(nums) < 1 or len(nums) > 2:
         has_salary = False
-    elif len(nums) == 1:
-        salary_min = salary_max = int(nums[0])
+    elif len(nums) == 1: 
+        try:
+            nums[0] = int(nums[0])
 
-        if salary_min < 500:
-            yearly = False
+            if 5 < nums[0] < 400_000:
+                salary_min = salary_max = nums[0]
+
+                if salary_min < 500:
+                    yearly = False
+            else:
+                has_salary = False
+        except:
+            has_salary = False
+            
     elif len(nums) == 2:
-        salary_min = int(nums[0])
-        salary_max = int(nums[1])
+        try:
+            nums[0] = int(nums[0])
+            nums[1] = int(nums[1])
 
-        if salary_min < 500:
-            yearly = False
+            if nums[1] > nums[0] and nums[0] > 5:
+                salary_min = salary_max = nums[0]
+
+                if salary_min < 500:
+                    yearly = False
+            else:
+                has_salary = False
+        except:
+            has_salary = False
+
+    # ---------
+    # WARNING
+    # GOVNO-KOD
+    # ---------
+    
+    # ---------
+    # WARNING
+    # GOVNO-KOD
+    # ---------
+    
+    # ---------
+    # WARNING
+    # GOVNO-KOD
+    # ---------
+    
+    # ---------
+    # WARNING
+    # GOVNO-KOD
+    # ---------
+
+
 
     if not id in memo_vacancy:
-        obj = Vacancy(job_id = id, company = company_name, has_salary = has_salary, salary_min = salary_min, salary_max = salary_max, yearly_salary = yearly)
+        obj = Vacancy(job_id = id, has_salary = has_salary, salary_min = salary_min, salary_max = salary_max, yearly_salary = yearly)
         obj.save()
         memo_vacancy[id] = obj
-    elif True: # elif EditExisting !!!!!!!!!!!!!!!!!!!!!!!!!!
+    elif EditExistingFlag: # elif EditExisting !!!!!!!!!!!!!!!!!!!!!!!!!!
         obj = memo_vacancy[id]
-        obj.company = company_name
         obj.has_salary = has_salary
         obj.salary_min = salary_min
         obj.salary_max = salary_max
@@ -302,7 +380,7 @@ def get_skills_from_description(task, skills):
                 memo_vacancy_skill[vacancy_id] = [skill_id]
             else:
                 memo_vacancy_skill[vacancy_id].append(skill_id)
-    elif False: # elif EditExisting !!!!!!!!!!
+    elif False: # elif EditExisting ??????
         pass
 
             
@@ -560,15 +638,20 @@ def visualize_graphs(keywords):
     print(f'\nVisualization done in {time.time() - start} seconds\n')
 
 # to review
-def main(scrapeGraph: bool = False, scrapeAllDescriptionSkills: bool = False) -> None:
+def main(scrapeGraph: bool = False, scrapeAllDescriptionSkills: bool = False, EditExisting: bool = False) -> None:
+    global EditExistingFlag
+    
     if not scrapeGraph and not scrapeAllDescriptionSkills:
         return
     
+    load_memo_company()
     load_memo_graph()
     load_memo_skill()
     load_memo_vacancy()
     load_memo_vacancy_skill()
     load_skill_to_id()
+
+    EditExistingFlag = EditExisting
 
     # print(skill_to_id.keys())
     # print(memo_vacancy_skill.keys())
