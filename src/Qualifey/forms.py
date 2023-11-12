@@ -2,6 +2,7 @@ from django import forms
 import json, os
 from scraping.utils import get_all_keywords_keys
 from scraping.models import Skill
+from Qualifey.utils import is_migration
 
 class FindForm(forms.Form):
     # language = forms.ModelChoiceField(
@@ -12,9 +13,12 @@ class FindForm(forms.Form):
     # )
 
     # !!! GET FROM DB !!!
-    CHOICES = (
-        sorted((i.skill, i.skill) for i in Skill.objects.all())
-    )
+    if not is_migration():
+        CHOICES = (
+            sorted((i.skill, i.skill) for i in Skill.objects.all())
+        )
+    else:
+        CHOICES = ()
     language = forms.MultipleChoiceField(
         choices = CHOICES,
         required = False,
