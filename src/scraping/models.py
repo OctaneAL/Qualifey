@@ -5,8 +5,9 @@ class Vacancy(models.Model):
     # company = models.CharField(max_length=128, blank = True, null = True)
     company = models.ForeignKey('Company', on_delete=models.CASCADE, null = True)
     # salary = models.BigIntegerField(blank = True, null = True)
-    country = models.CharField(max_length=64, blank = True, null = True)
-    city = models.CharField(max_length=64, blank = True, null = True)
+    # country = models.CharField(max_length=64, blank = True, null = True)
+    # city = models.CharField(max_length=64, blank = True, null = True)
+    state = models.ForeignKey('State', on_delete=models.CASCADE, null = True)
 
     has_salary = models.BooleanField(blank = True, null = True, default = None)
     salary_min = models.IntegerField(blank = True, null = True, default = None)
@@ -15,9 +16,36 @@ class Vacancy(models.Model):
     
     def __str__(self):
         return str(self.job_id)
-    
+
+class State(models.Model):
+    abbreviation = models.CharField(max_length=2, blank=True, unique=True)
+    name = models.CharField(max_length=64, blank=True)
+    # country ????
+
+    def __str__(self):
+        return str(self.name)
+
+class City(models.Model):
+    name = models.CharField(max_length=64, blank=True, unique=True)
+    state = models.ForeignKey('State', on_delete=models.CASCADE, null=True)
+    country = models.ForeignKey('Country', on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return str(self.name)
+
+class Country(models.Model):
+    abbreviation = models.CharField(max_length=5, blank=True, unique=True)
+    name = models.CharField(max_length=64, blank=True)
+
+    def __str__(self):
+        return str(self.name)
+
 class Company(models.Model):
-    name = models.CharField(max_length=128, blank=True)
+    name = models.CharField(max_length=64, blank=True)
+    # country ????
+
+    def __str__(self):
+        return str(self.name)
 
 class Graph(models.Model):
     skill = models.OneToOneField(
