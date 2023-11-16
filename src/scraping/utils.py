@@ -531,6 +531,11 @@ def scrape_skills(ids):
 
 def clear_salary_string(salary: str) -> str:
     res = ''
+
+    salary = salary.replace('.00 ', '')
+    if salary.endswith('.00'):
+        salary = salary[:-3]
+
     for i in salary:
         if '0' <= i <= '9' or i == '-':
             res += i

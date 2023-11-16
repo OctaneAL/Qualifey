@@ -27,6 +27,9 @@ class State(models.Model):
 
 class City(models.Model):
     name = models.CharField(max_length=64, blank=True, unique=True)
+    male_population = models.BigIntegerField(blank=True, default=0)
+    female_population = models.BigIntegerField(blank=True, default=0)
+    population = models.BigIntegerField(blank=True, default=0)
     state = models.ForeignKey('State', on_delete=models.CASCADE, null=True)
     country = models.ForeignKey('Country', on_delete=models.CASCADE, null=True)
 
