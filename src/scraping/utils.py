@@ -8,7 +8,11 @@ from collections import Counter
 from itertools import permutations
 from visualization.utils import visualize_graph
 
-from scraping.models import Skill, Vacancy_skill, Skill_phrase, Graph, Vacancy, Company
+from scraping.models import (
+    Skill, Vacancy_skill, Skill_phrase,
+    Graph, Vacancy, Company,
+    City, State, Country,
+)
 
 ua = UserAgent()
 
@@ -27,6 +31,12 @@ memo_skill = {}
 memo_vacancy_skill = {}
 
 memo_company = {}
+
+memo_city = {} # city : id
+
+memo_state = {} # abbreviation: id
+
+memo_country = {} # abbreviation : id
 
 skill_to_id = {}
 
@@ -65,6 +75,21 @@ def load_memo_vacancy_skill():
             memo_vacancy_skill[vacancy_skill.vacancy_id].append(vacancy_skill.skill_id)
         else:
             memo_vacancy_skill[vacancy_skill.vacancy_id] = [vacancy_skill.skill_id]
+
+def load_memo_city():
+    cities = City.objects.all()
+    for city in cities:
+        memo_city[city.name.lower()] = city.id
+
+def load_memo_state():
+    states = State.objects.all()
+    for state in states:
+        memo_state[state.abbreviation] = state.id
+
+def load_memo_country():
+    countries = Country.objects.all()
+    for country in countries:
+        memo_country[country.abbreviation] = country.id
 
 # good
 def convert_json_graph(keyword):
@@ -192,6 +217,34 @@ def is_word_in(word, s):
     if re.search(r"\b" + re.escape(word) + r"\b", s):
         return True
     return False
+
+def parse_city(s: str) -> str or None:
+    s = s.lower()
+
+    s = s.replace('remote or ', '')
+    if s.split(',')[0].strip() in memo_city:
+        return memo_city[s.split(',')[0].strip()]
+
+def parse_state(s: str) -> str or None:
+    s = [i.strip() for i in s.split(',')]
+    
+    for word in s:
+        if word in memo_state:
+            return memo_state[word]
+    
+    return None
+
+def parse_country(s: str) -> str or None:
+    s = [i.strip() for i in s.split(',')]
+    
+    for word in s:
+        if word in memo_country:
+            return memo_country[word]
+    
+    return None
+
+def is_remote(s: str) -> bool:
+    return 'remote' in s.lower()
 
 # good ??? to review
 def get_skills_from_description(task, skills):
@@ -654,6 +707,9 @@ def main(scrapeGraph: bool = False, scrapeAllDescriptionSkills: bool = False, Ed
     load_memo_skill()
     load_memo_vacancy()
     load_memo_vacancy_skill()
+    load_memo_city()
+    load_memo_state()
+    load_memo_country()
     load_skill_to_id()
 
     EditExistingFlag = EditExisting

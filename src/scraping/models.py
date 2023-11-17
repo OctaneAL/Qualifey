@@ -39,6 +39,8 @@ class City(models.Model):
 class Country(models.Model):
     abbreviation = models.CharField(max_length=5, blank=True, unique=True)
     name = models.CharField(max_length=64, blank=True)
+    population = models.BigIntegerField(blank=True, default=0)
+    gdp_usd = models.BigIntegerField(blank=True, default=0)
 
     def __str__(self):
         return str(self.name)
