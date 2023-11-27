@@ -7,11 +7,12 @@ from progress.bar import FillingSquaresBar
 from collections import Counter
 from itertools import permutations
 from visualization.utils import visualize_graph
+from scraping.eures_scraping import scrap_eures
 
 from scraping.models import (
-    Skill, Vacancy_skill, Skill_phrase,
+    Skill, Skill_phrase,
     Graph, Vacancy, Company,
-    City, State, Country,
+    State, Country,
 )
 
 ua = UserAgent()
@@ -753,6 +754,19 @@ def main(scrapeGraph: bool = False, scrapeAllDescriptionSkills: bool = False, Ed
     if scrapeAllDescriptionSkills:
         scrape_all_description_skills(ids)
 
+def scrape_vacancies():
+    eures = scrap_eures()
+    eures_to_db(eures)
+
+def eures_to_db(vacancies):
+    for country_code in vacancies:
+        country_id = Country.objects.get(abbreviation = country_code).id
+        for vacancy in vacancies[country_code]:
+            if Vacancy.objects.filter(job_id = vacancy['id'], country_id = country_id, timestamp = vacancy['timestamp']).exists():
+                continue
+            obj = Vacancy(job_id = vacancy['id'], country_id = country_id, timestamp = vacancy['timestamp']) # maybe more
+            obj.save()
+            
 # if __name__ == '__main__':
 #     scrapeGraph = True
 #     scrapeAllDescriptionSkills = False
