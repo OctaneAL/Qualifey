@@ -1,4 +1,4 @@
-import requests, json
+import requests, json, pytz
 from datetime import datetime
 from scraping.models import Country, JobTitle, OccupationUri
 
@@ -64,7 +64,7 @@ def parse_vacancies(json_obj):
         arr.append(
             {
                 'id': obj['id'],
-                'timestamp': datetime.fromtimestamp(obj['lastModificationDate'] // 1000), # Creation Date
+                'timestamp': datetime.fromtimestamp(obj['lastModificationDate'] // 1000, tz=timezone), # Creation Date
                 'schedule': obj['positionScheduleCodes'], # Full-Time, ...
             }
         )
@@ -206,6 +206,7 @@ cookies = {
 # }
 
 # country_codes = ['be', 'de', 'se', 'nl', 'li', 'ro', 'pl', 'fr']
+timezone = pytz.timezone("Europe/Sofia")
 country_codes = [obj.abbreviation for obj in Country.objects.all()]
 country_codes.remove('US')
 # keywords = ['Data Analyst', 'Software Developer', 'Software Engineer/Architect']

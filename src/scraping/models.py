@@ -11,6 +11,7 @@ class Vacancy(models.Model):
     country = models.ForeignKey('Country', on_delete=models.CASCADE, null = True, default = None)
 
     source = models.ForeignKey('Source', on_delete=models.CASCADE, null = True, default = None)
+    timestamp = models.DateTimeField(null = True, default = None)
     # timestamp = models.DateTimeField(null = True, default = None)
 
     # has_salary = models.BooleanField(blank = True, null = True, default = None)

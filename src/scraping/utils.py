@@ -7,7 +7,7 @@ from progress.bar import FillingSquaresBar
 from collections import Counter
 from itertools import permutations
 from visualization.utils import visualize_graph
-from scraping.eures_scraping import scrap_eures, scrap_eures_counts
+from scraping.eures_scraping import scrap_eures, scrap_eures_counts, timezone
 
 from scraping.models import (
     Skill, Skill_phrase, JobTitle,
@@ -764,8 +764,13 @@ def eures_to_db(vacancies):
     for keyword in vacancies:
         for country_code in vacancies[keyword]:
             country_id = Country.objects.get(abbreviation = country_code).id
+            print("GOT", country_id)
+            cur = 0
+            target = len(vacancies[keyword][country_code])
             for vacancy in vacancies[keyword][country_code]:
-                if Vacancy.objects.filter(job_rid = vacancy['id'], country_id = country_id, timestamp = vacancy['timestamp']).exists():
+                cur += 1
+                print(cur, '/', target)
+                if Vacancy.objects.filter(job_id = vacancy['id'], country_id = country_id, timestamp = vacancy['timestamp']).exists():
                     continue
                 obj = Vacancy(
                     job_id = vacancy['id'],
@@ -775,9 +780,13 @@ def eures_to_db(vacancies):
                 obj.save()
 
 def eures_counts_to_db(vacancies):
-    time = datetime.datetime.now()
+    time = datetime.datetime.now(tz = timezone)
     for keyword in vacancies:
+        cur = 0
+        target = len(vacancies[keyword])
         for country_code in vacancies[keyword]:
+            cur += 1
+            print(cur, '/', target)
             country_id = Country.objects.get(abbreviation = country_code).id
             jobtitle_id = JobTitle.objects.get(name = keyword).id
             obj = AvailableVacancies(
