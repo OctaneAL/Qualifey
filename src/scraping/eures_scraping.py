@@ -16,7 +16,7 @@ def scrap_eures_keyword(keyword):
         
         if json_obj == None:
             print('Error')
-            break
+            continue
 
         cur = 0
         print('Count of vacancies -', json_obj['numberRecords'])
@@ -84,12 +84,40 @@ def send_search_request(cookies, headers, json_data):
 
     return response
 
+def scrap_eures_keyword_count(keyword):
+    json_data['occupationUris'] = occupationUris[keyword]
+
+    vacancies = {}
+    for country_code in country_codes:
+        print(country_code.upper())
+        vacancies[country_code] = None
+
+        json_data['locationCodes'] = [country_code]
+
+        json_obj = response_text_to_json(get_response_text(send_search_request(cookies=cookies, headers=headers, json_data=json_data)))
+        
+        if json_obj == None:
+            print('Error')
+            continue
+
+        vacancies[country_code] = json_obj['numberRecords']
+    
+    return vacancies
+
 def scrap_eures():
     json_data['publicationPeriod'] = 'LAST_WEEK'
     vacancies = {}
     for keyword in keywords:
         vacancies[keyword] = scrap_eures_keyword(keyword)
 
+    return vacancies
+
+def scrap_eures_counts():
+    json_data['publicationPeriod'] = None
+    vacancies = {}
+    for keyword in keywords:
+        vacancies[keyword] = scrap_eures_keyword_count(keyword)
+    
     return vacancies
 
 headers = {
@@ -179,6 +207,7 @@ cookies = {
 
 # country_codes = ['be', 'de', 'se', 'nl', 'li', 'ro', 'pl', 'fr']
 country_codes = [obj.abbreviation for obj in Country.objects.all()]
+country_codes.remove('US')
 # keywords = ['Data Analyst', 'Software Developer', 'Software Engineer/Architect']
 keywords = [obj.name for obj in JobTitle.objects.all()]
 

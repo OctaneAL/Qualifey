@@ -10,6 +10,7 @@ class Vacancy(models.Model):
     state = models.ForeignKey('State', on_delete=models.CASCADE, null = True, default = None)
     country = models.ForeignKey('Country', on_delete=models.CASCADE, null = True, default = None)
 
+    source = models.ForeignKey('Source', on_delete=models.CASCADE, null = True, default = None)
     # timestamp = models.DateTimeField(null = True, default = None)
 
     # has_salary = models.BooleanField(blank = True, null = True, default = None)
@@ -42,11 +43,20 @@ class State(models.Model):
         return str(self.name)
 
 class AvailableVacancies(models.Model):
-    count = models.BigAutoField(blank = True)
-    timestamp = models.DateTimeField(blank = True)
+    count = models.BigIntegerField()
+    jobtitle = models.ForeignKey('JobTitle', on_delete=models.CASCADE)
+    country = models.ForeignKey('Country', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField()
 
     def __str__(self):
         return str(self.timestamp)
+    
+class Source(models.Model):
+    name = models.CharField(max_length=64)
+    link = models.CharField(max_length=128)
+
+    def __str__(self):
+        return str(self.name)
 
 # class City(models.Model):
 #     name = models.CharField(max_length=64, blank=True, unique=True)
@@ -59,9 +69,17 @@ class AvailableVacancies(models.Model):
 #     def __str__(self):
 #         return str(self.name)
 
+class Continent(models.Model):
+    name = models.CharField(max_length=64)
+
+    def __str__(self):
+        return str(self.name)
+    
 class Country(models.Model):
     abbreviation = models.CharField(max_length=5, blank=True, unique=True)
     name = models.CharField(max_length=64, blank=True)
+    
+    # continent = models.ForeignKey('Continent', on_delete=models.CASCADE, null = True, default = None)
     # population = models.BigIntegerField(blank=True, default=0)
     # gdp_usd = models.BigIntegerField(blank=True, default=0)
 
