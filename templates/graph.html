@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Visualization</h1>
+    
+  <form method="GET" action="#">
+      <div class="select">
+        {{form.language}}
+      </div>
+    <input type="submit" class="btn" value="GENERATE" name="submit">
+  </form>
+
+  
+  {% if show %}
+  {% include path %}
+  {% endif %}
+{% endblock %}
