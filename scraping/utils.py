@@ -804,6 +804,22 @@ def eures_counts_to_db(vacancies):
             )
             obj.save()
 
+def djinni_count_to_db(vacancies):
+    country_code = 'UA'
+    source_id = Source.objects.get(name = 'djinni').id
+    time = datetime.datetime.now(tz = timezone)
+    country_id = Country.objects.get(abbreviation = country_code).id
+    for keyword in vacancies:
+        jobtitle_id = JobTitle.objects.get(name = keyword).id
+        obj = AvailableVacancies(
+            count = vacancies[keyword],
+            country_id = country_id,
+            jobtitle_id = jobtitle_id,
+            timestamp = time,
+            source_id = source_id,
+        )
+        obj.save()
+
             
 # if __name__ == '__main__':
 #     scrapeGraph = True
