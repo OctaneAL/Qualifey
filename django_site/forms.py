@@ -12,7 +12,6 @@ class FindForm(forms.Form):
     #     label='Специальность',
     # )
 
-    # !!! GET FROM DB !!!
     if not is_migration():
         CHOICES = (
             sorted((i.skill, i.skill) for i in Skill.objects.all())

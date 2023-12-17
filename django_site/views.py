@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from visualization.utils import visualize_graph, get_graph, hash_code
 from django_site.forms import FindForm
+from scraping.models import Skill
 import os 
 
 def home_view(request):
@@ -17,7 +18,7 @@ def graph_view(request):
     # language = request.GET.get('language')
 
     language = request.GET.get('language')
-    if language:
+    if language and Skill.objects.filter(skill = language).exists():
         # print(request_['language'])
         context['show'] = True
         context['path'] = os.path.join('d3graphs', f'{hash_code(language)}.html')
