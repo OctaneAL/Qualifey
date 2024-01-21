@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Chart *what chart?*</h1>
+<form method="GET" action="#">
+    <div class="select_job">
+        {{form.job_title}}
+    </div>
+    <div class="select_country">
+        {{form.country}}
+    </div>
+  <input type="submit" class="btn" value="GENERATE" name="submit">
+</form>
+{% if show %}
+<div>
+    <canvas id="myLines" style="width:100%;max-width:700px"></canvas>
+</div>
+{% endif %}
+<script>
+    const xValues1 = {{ xValues|safe }};
+    const axisColor = 'rgba(152, 116, 163, 1)'
+    
+    new Chart("myLines", {
+      type: "line",
+      data: {
+        labels: xValues1,
+        datasets: [{ 
+          label: '{{ label }}',
+          data: {{ data|safe }},
+          borderColor: "rgba(42, 237, 243, 0.8)",
+          fill: true,
+          backgroundColor: 'rgba(57, 249, 255, 0.25)',
+          tension: 0.4
+        }]
+      },
+      options: {
+        legend: {display: true},
+        scales: {
+          y: {
+            grid: {
+              color: (line) => (line.index === 0 ? axisColor : NaN),
+              display: true,
+            },
+            ticks: { color: 'white' }
+          },
+          x: {
+            grid: {
+              color: (line) => (line.index === 0 ? axisColor : NaN),
+              display: true,
+            },
+            ticks: { color: 'white' }
+          }
+        }
+      }
+    });
+  </script>
+{% endblock %}
