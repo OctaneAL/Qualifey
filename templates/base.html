@@ -13,7 +13,8 @@
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-	
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 	<link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
     <title>Qualifey</title>
@@ -53,21 +54,20 @@
 									<a class="nav-link" href="#">Agency</a>
 								</li> -->
 								<li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4"> <!-- Дописывать в этот li класс "active" -->
-									<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Companies</a>
+									<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Charts</a>
 									<div class="dropdown-menu">
-										<a class="dropdown-item" href="#">By Salaries</a>
-										<a class="dropdown-item" href="#">By Vacancies</a>
-										<a class="dropdown-item" href="#">Search</a>
+										<a class="dropdown-item" href="{% url 'chart_count' %}">Vacancies Count</a>
+										<a class="dropdown-item" href="{% url 'chart_increase' %}">Vacancies Increase</a>
 									</div>
 								</li>
-								<li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+								<!-- <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
 									<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Skills</a>
 									<div class="dropdown-menu">
 										<a class="dropdown-item" href="#">By Salaries</a>
 										<a class="dropdown-item" href="#">By Vacancies</a>
 										<a class="dropdown-item" href="#">Search</a>
 									</div>
-								</li>
+								</li> -->
 								<!-- <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
 									<a class="nav-link" href="#">Journal</a>
 								</li>
@@ -88,8 +88,8 @@
 				<div class="container">
 					<div class="row">
 						<div class="col-12">
-						{% block content %}
-						{% endblock %}
+							{% block content %}
+							{% endblock %}
 						</div>	
 					</div>		
 				</div>		

@@ -2,10 +2,58 @@ import os, json, hashlib
 import pandas as pd
 from d3blocks import D3Blocks
 from math import floor
-from scraping.models import Skill, Graph
+from scraping.models import Skill, Graph, AvailableVacancies, Vacancy
+
 
 input_path = os.path.join(os.getcwd(), 'visualization', 'data')
 output_path = os.path.join(os.getcwd(), 'templates')
+
+def format_date(timestamp):
+    return timestamp.strftime('%d/%m/%Y')
+
+def get_count_data(job_title: str, country: str) -> tuple[list]:
+    dates = []
+    counts = []
+
+    if country == 'Ukraine':
+        source_name = 'djinni'
+    else:
+        source_name = 'EURES'
+
+    data = [(obj.timestamp, obj.count) for obj in AvailableVacancies.objects.filter(country__name = country, source__name = source_name, jobtitle__name = job_title)]
+    data.sort(key = lambda x: x[0])
+
+    for timestamp, count in data:
+        dates.append(format_date(timestamp = timestamp))
+        counts.append(count)
+
+    return (dates, counts)
+
+def get_increase_data(job_title: str, country: str, convert_date: bool = True) -> tuple[list]:
+    dates = []
+    increases = []
+
+    source_name = 'EURES'
+
+    t = {}
+
+    for obj in Vacancy.objects.filter(country__name = country, jobtitle__name = job_title, source__name = source_name):
+        # timestamp = format_date(obj.timestamp)
+        timestamp = obj.timestamp.replace(hour = 0, minute = 0, second = 0, microsecond = 0)
+
+        if not timestamp in t:
+            t[timestamp] = 1
+        else:
+            t[timestamp] += 1
+    
+    for date, increase in sorted(zip(t.keys(), t.values()), key = lambda x: x[0]):
+        if convert_date:
+            dates.append(format_date(date))
+        else:
+            dates.append(date)
+        increases.append(increase)
+    
+    return (dates, increases)
 
 def visualize_global_graph(input_name: str = 'global_graph.json', output_name: str = 'd3graph.html'):
     graph = read_json(os.path.join(input_path, input_name))

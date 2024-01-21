@@ -5,7 +5,26 @@ import matplotlib.pyplot as plt
 def add_increase_plot(jobtitle, country):
     x = []
     y = []
+
     for a, b in sorted(zip(list(da[jobtitle][country].keys()), list(da[jobtitle][country].values())), key = lambda x: x[0]):
+        x.append(a)
+        y.append(b)
+    
+    plt.plot(x, y)
+
+def add_increase_plot_all(jobtitle):
+    x = []
+    y = []
+
+    data = {}
+    for country in da[jobtitle]:
+        for date in list(da[jobtitle][country].keys()):
+            if not date in data:
+                data[date] = da[jobtitle][country][date]
+            else:
+                data[date] += da[jobtitle][country][date]
+
+    for a, b in sorted(zip(list(data.keys()), list(data.values())), key = lambda x: x[0]):
         x.append(a)
         y.append(b)
     
@@ -19,6 +38,24 @@ def add_count_plot(jobtitle, country):
         x.append(a.replace(hour = 0, minute = 0, second = 0, microsecond = 0))
         y.append(b)
 
+    plt.plot(x, y)
+
+def add_count_plot_all(jobtitle):
+    x = []
+    y = []
+
+    data = {}
+    for obj in AvailableVacancies.objects.filter(jobtitle_id = JobTitle.objects.get(name = jobtitle)):
+        date = obj.timestamp.replace(hour = 0, minute = 0, second = 0, microsecond = 0)
+        if not date in data:
+            data[date] = obj.count
+        else:
+            data[date] += obj.count
+
+    for a, b in sorted(zip(list(data.keys()), list(data.values()))):
+        x.append(a)
+        y.append(b)
+    
     plt.plot(x, y)
 
 def save_plot():

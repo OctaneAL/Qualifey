@@ -16,10 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django_site.views import home_view, graph_view
+from django_site.views import home_view
+from visualization.views import graph_view, chart_count_view, chart_increase_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_view, name='home'),
-    path('graph/', graph_view, name='graph')
+    path('graph/', graph_view, name='graph'),
+    path('charts/count/', chart_count_view, name='chart_count'),
+    path('charts/increase/', chart_increase_view, name='chart_increase'),
 ]
