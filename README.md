@@ -11,3 +11,6 @@ This repository contains a program developed to analyze and evaluate labor marke
 The conclusions of the study indicate that the developed tool is a significant step towards creating an innovative and practical solution for labor market analysis. The results can serve as a foundation for further research and the implementation of new approaches in labor market analysis and human resource management.
 
 Required Python 3.9+
+
+![Banner](graph_python.png)
+![Banner](chart_ge_dev.png)
